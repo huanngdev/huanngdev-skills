@@ -63,6 +63,12 @@ jobs:
             # A release PR may only bump the manifest and move the changelog.
             extra=$(printf '%s\n' "$changed" | grep -vxE '\.claude-plugin/plugin\.json|CHANGELOG\.md' || true)
             [ -z "$extra" ] || { echo "::error::release PR touches more than plugin.json + CHANGELOG.md: $extra"; exit 1; }
+            m=.claude-plugin/plugin.json
+            old=$(git show "$BASE:$m" | jq -r .version); new=$(jq -r .version "$m")
+            [ "release/v$new" = "$HEAD_REF" ] || { echo "::error::branch $HEAD_REF but plugin.json says $new"; exit 1; }
+            [ "$(printf '%s\n%s\n' "$old" "$new" | sort -V | tail -1)" = "$new" ] && [ "$old" != "$new" ] || { echo "::error::version must increase ($old → $new)"; exit 1; }
+            [ "$(git show "$BASE:$m" | jq -S 'del(.version)')" = "$(jq -S 'del(.version)' "$m")" ] || { echo "::error::release PR may change only the version in $m"; exit 1; }
+            grep -q "^## \[$new\] - " CHANGELOG.md || { echo "::error file=CHANGELOG.md::no section for $new"; exit 1; }
             exit 0
           fi
           printf '%s\n' "$changed" | grep -qE '^(skills|\.claude-plugin)/' || exit 0

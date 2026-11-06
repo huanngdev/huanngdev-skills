@@ -13,14 +13,14 @@ Project rules (AGENTS.md) win on conflict. Global rules: `hd-index`.
 Docs: hd-index docs sources (TypeScript, Vite / Vitest, Testing Library, MSW, Playwright).
 
 ## Always
-- Read the project's `AGENTS.md` first; hand-off check is `bun run check` + `git diff --check` (details in `workflow.md`).
+- Hand-off check is `bun run check` + `git diff --check` (details in `workflow.md`).
 
 ## Topics — read only what the task touches
 | File | Read when |
 |---|---|
 | `references/workflow.md` | Starting any task, ask-first boundaries, hand-off and reporting |
 | `references/git.md` | Branches, commits, PRs, merging |
-| `references/docs.md` | AGENTS.md, ADRs, milestones/progress, writing project docs |
+| `references/docs.md` | AGENTS.md, CLAUDE.md, ADRs, plans, milestones/progress, writing project docs |
 | `references/typescript.md` | Writing or reviewing any TypeScript |
 | `references/testing.md` | Writing or fixing tests, deciding what to test |
-| `references/security.md` | Secrets, input handling, headers, cookies, dependencies, logging |
+| `references/security.md` | Secrets, untrusted input, redirects, outbound URLs, CSRF, headers, cookies, audit logging, dependencies |

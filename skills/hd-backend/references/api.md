@@ -23,14 +23,14 @@ packages/shared        # schemas, DTOs, error codes, page schema
 ## Errors (shared with the frontend)
 `packages/shared/src/errors.ts`:
 ```ts
-export const ErrorCode = z.enum(["VALIDATION_FAILED", "UNAUTHENTICATED", "FORBIDDEN", "NOT_FOUND", "CONFLICT", "RATE_LIMITED", "INTERNAL"]);
+export const ErrorCode = z.enum(["VALIDATION_FAILED", "UNAUTHENTICATED", "FORBIDDEN", "NOT_FOUND", "CONFLICT", "PAYLOAD_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "RATE_LIMITED", "INTERNAL"]);
 export const ErrorResponseSchema = z.object({
   error: z.object({ code: ErrorCode, message: z.string(), details: z.unknown().optional() }),
 });
 ```
 - API: one `AppError(code, status, message, details?)` class; services throw it.
-- Status per code: 400, 401, 403, 404, 409, 429, 500 in the order above.
-- `app.onError`: `AppError` → its status + shape; Hono `HTTPException` (e.g. malformed JSON → 400, `bodyLimit`) → shared shape with the code for its status (other 4xx → `VALIDATION_FAILED`); anything else → 500 `INTERNAL` (log the real error with the request id, never return it).
+- Status per code: 400, 401, 403, 404, 409, 413, 415, 429, 500 in the order above. Code and status always agree.
+- `app.onError`: `AppError` → its status + shape; Hono `HTTPException` (e.g. malformed JSON → 400) → shared shape with the code for its status (a 4xx without its own code → 400 `VALIDATION_FAILED`); anything else → 500 `INTERNAL` (log the real error with the request id, never return it).
 - `app.notFound` returns the shared shape with `NOT_FOUND`, so unknown routes don't leak Hono's plain-text 404.
 - Validation helper (all input goes through it; it also feeds the OpenAPI spec):
 ```ts
@@ -77,7 +77,7 @@ app.get("/docs", Scalar({ url: "/openapi.json" }));
 - Only when `env.NODE_ENV !== "production"` unless the project decides to publish its docs.
 
 ## Middleware order
-request id → logger → `secureHeaders` → CORS → `bodyLimit` → session (`hd-auth`) → routes (incl. Better Auth handler) → `onError` / `notFound`.
+request id → logger → `secureHeaders` → CORS → `bodyLimit` (its `onError` returns 413 `PAYLOAD_TOO_LARGE`) → trusted-`Origin` check on unsafe methods outside `/api/auth/*` (`hd-auth` setup.md) → session (`hd-auth`) → routes (incl. Better Auth handler) → `onError` / `notFound`.
 - Logging: pino, JSON, child logger per request with `requestId`. Never log secrets, tokens, cookies, passwords or full bodies with PII.
 - CORS: one `cors()` middleware for the whole app (it also covers `/api/auth/*`), origins from env (`CORS_ORIGINS`, comma list), `credentials: true` when using cookies. Never `*` with credentials.
 - Rate limit auth and expensive endpoints; store counters in Redis when running more than one instance.

@@ -12,6 +12,7 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 - `hd-validate`: Zod everywhere, shared schemas, JSON-safe money, mandatory env validation, forms.
 - `hd-auth`: Better Auth conventions — Hono mounting, uuid IDs, server-owned role field (`input: false`), CSRF/origin checks for our routes, rate limit, session revocation, permissions in services.
 - `hd-ai`: AI SDK + OpenRouter — provider module, structured output, safety, token/step limits, abort on disconnect, per-user quotas, tool authorization, mock-model tests.
-- `hd-infra`: Turborepo + Bun monorepo (TUI, cache limits, env-aware inputs), internal packages built with tsdown, shared configs in `packages/config`, Docker Compose with generated secrets (`assets/gen-env.ts`), GitHub Actions baseline.
+- `hd-backend`: uploads go to a staging key and are copied to a server-only final key before inspection; idempotency keys handle concurrent duplicates; `PAYLOAD_TOO_LARGE` / `UNSUPPORTED_MEDIA_TYPE` codes; trusted-`Origin` check in the middleware order.
+- `hd-infra`: Turborepo + Bun monorepo (TUI, cache limits, env-aware inputs), internal packages built with tsdown, shared configs in `packages/config`, Docker Compose with generated secrets (`assets/gen-env.ts`: Bun-dotenv-safe quoting, atomic mode-600 writes), GitHub Actions baseline.
 
 [Unreleased]: https://github.com/huanngdev/huanngdev-skills/commits/main

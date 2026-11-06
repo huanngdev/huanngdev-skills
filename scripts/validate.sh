@@ -37,6 +37,7 @@ in_map() { printf '%s\n' "$map_pairs" | grep -qxF "$1"$'\t'"$2"; }
 skill_in_map() { printf '%s\n' "$map_pairs" | cut -f1 | grep -qxF "$1"; }
 
 echo "• skill map"
+bun scripts/sync-map.ts --check || err "skill map out of date (bun scripts/sync-map.ts)"
 while IFS=$'\t' read -r s f; do
   [ -n "$s" ] || continue
   [ -d "skills/$s" ] || { err "map lists unknown skill '$s'"; continue; }
@@ -46,7 +47,10 @@ done <<<"$map_pairs"
 planned=()
 for d in skills/*/; do
   n=$(basename "$d")
-  [ -f "$d/SKILL.md" ] || planned+=("$n")
+  if [ ! -f "$d/SKILL.md" ]; then
+    planned+=("$n")
+    for r in "$d"references/*.md; do grep -q '<!-- TODO' "$r" || err "planned $n: $(basename "$r") must be a <!-- TODO --> stub until SKILL.md exists"; done
+  fi
   [ -f "$index" ] && ! skill_in_map "$n" && err "$n not listed in $index skill map"
   for r in "$d"references/*.md; do
     rn=$(basename "$r")
@@ -66,7 +70,10 @@ read_frontmatter() {
     try {
       const fm = Bun.YAML.parse(m[1]);
       if (!fm || typeof fm !== "object" || Array.isArray(fm)) throw new Error("frontmatter is not a mapping");
-      console.log(JSON.stringify({ ok: true, keys: Object.keys(fm), name: fm.name ?? null, description: fm.description ?? null, author: fm.metadata?.author ?? null }));
+      const str = (v) => (typeof v === "string" ? v : null);
+      const types = Object.entries({ name: "string", description: "string", license: "string", compatibility: "string", metadata: "object", "allowed-tools": "string" })
+        .filter(([k, type]) => k in fm && typeof fm[k] !== type).map(([k]) => k);
+      console.log(JSON.stringify({ ok: true, keys: Object.keys(fm), badTypes: types, name: str(fm.name), description: str(fm.description), license: str(fm.license), author: str(fm.metadata?.author) }));
     } catch (e) { console.log(JSON.stringify({ ok: false, error: String(e.message ?? e) })); }
   ' "$1"
 }
@@ -82,7 +89,9 @@ for f in ${skill_files[@]+"${skill_files[@]}"}; do
   for k in $(json "$fm" keys); do
     [[ "$allowed_keys" == *" $k "* ]] || err "frontmatter key '$k' not allowed (AGENTS.md §3)"
   done
+  bad=$(json "$fm" badTypes); [ -z "$bad" ] || err "wrong YAML type for: $bad"
   [ -n "$(json "$fm" author)" ] || err "metadata.author missing"
+  [ "$(json "$fm" license)" = MIT ] || err "license must be MIT (matches LICENSE)"
   [ "$name" = "$dir" ] || err "name '$name' != dir '$dir'"
   [[ "$name" =~ ^hd-[a-z0-9]+(-[a-z0-9]+)*$ ]] && [ ${#name} -le 64 ] || err "name must be hd-<lowercase-hyphen>, <=64 chars"
   [ -n "$desc" ] || err "missing description"
@@ -103,7 +112,9 @@ for f in ${skill_files[@]+"${skill_files[@]}"}; do
   for r in skills/"$dir"/references/*.md; do
     rl=$(wc -l <"$r" | tr -d ' ')
     [ "$rl" -le "$MAX_TOPIC_LINES" ] || err "$(basename "$r") $rl lines > $MAX_TOPIC_LINES (split the topic)"
-    [ "$r" = "$registry" ] || ! grep -qE 'references/|\]\([^)]*\.md\)' "$r" || err "$(basename "$r") links another topic file (one level deep only)"
+    if [ "$r" != "$registry" ] && grep -vE '\]\((\.\./)?assets/' "$r" | grep -qE 'references/|\]\([^)]*\.md\)'; then
+      err "$(basename "$r") links another topic file (one level deep only; assets/ links are fine)"
+    fi
     while IFS= read -r ref; do
       [ -e "skills/$dir/$ref" ] || err "broken link in $(basename "$r"): $ref"
     done < <(grep -oE 'assets/[A-Za-z0-9._/-]*[A-Za-z0-9_]' "$r" | sort -u)

@@ -6,12 +6,12 @@
 - Client: `new Bun.S3Client({ endpoint, accessKeyId, secretAccessKey, bucket })` — no AWS SDK.
 - The server chooses the object key (e.g. `<entity>/<id>/<uuid>.<ext>`) and stores it in the DB. Never accept a key or path from the client to read/write.
 
-## Upload flow (browser → storage, the API never proxies bodies)
-1. `POST …/uploads`: check permission, declared size and content type against an allow-list; create a `pending` upload row with the key; return `s3.presign(key, { method: "PUT", expiresIn: 600, type })`.
-2. Browser `PUT`s the file.
-3. `POST …/uploads/:id/complete`: `await s3.file(key).stat()`; if size or type differs from what was allowed (or the bytes fail a magic-number check where it matters), delete the object and reject. Otherwise mark it `ready` and attach it.
-4. Stale `pending` uploads (older than the URL lifetime) are deleted by the next upload request of that user; a scheduled job only if the project has one (no job system by default).
-- A presigned `PUT` can't enforce size by itself; step 3 is mandatory, never trust the declared values.
+## Upload flow (browser → storage, the API never proxies the client's upload)
+1. `POST …/uploads`: check permission, declared size and content type against an allow-list; create a `pending` upload row (owner, target, limits) with a **staging** key; return `s3.presign(stagingKey, { method: "PUT", expiresIn: 300 })`. Presign `type` only sets the response content type; it doesn't restrict the upload.
+2. Browser `PUT`s the file to the staging key.
+3. `POST …/uploads/:id/complete` (same owner, row still `pending`): copy staging → a final key that never gets a PUT URL (`await s3.write(finalKey, s3.file(stagingKey), { type })` — bytes stream through the server once), delete the staging object, then `stat()` and sniff the magic bytes of the **final** object. Mismatch with the allowed size/type → delete it and reject; otherwise store `type` from the sniffed bytes, mark `ready`, attach.
+4. Stale `pending` rows and staging objects (older than the URL lifetime) are deleted by the next upload request of that user; a scheduled job only if the project has one (no job system by default).
+- Never trust declared values, and never serve or attach the staging key: a presigned PUT can be replayed until it expires.
 - Private files are served through short-lived presigned `GET` URLs issued after an ownership check.
 
 ## Cache (only when measured as needed)

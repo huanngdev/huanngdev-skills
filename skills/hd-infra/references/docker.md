@@ -24,7 +24,7 @@ POSTGRES_PORT=5432
 # apps/api/.env.example — reuse root credentials instead of copying them:
 DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 ```
-Comments go on their own line. The generator rejects a value with a trailing ` # comment` and any `<generate>` left unreplaced.
+Comments go on their own line; a value containing `#` must be quoted (`"a#b"`). The generator rejects unquoted `#`, values with `$`, `\` or both quote kinds, and any `<generate>` left unreplaced.
 It never overwrites existing values, only appends missing keys, prints key names only, and sets mode 600. New secret = add `NAME=<generate>` to the right `.env.example`, rerun. Never print, log or commit generated values. One-off value without the script: `openssl rand -hex 32`.
 
 ## compose.yaml

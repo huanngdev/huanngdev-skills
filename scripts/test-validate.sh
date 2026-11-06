@@ -56,5 +56,24 @@ expect_fail "Vietnamese text" "Vietnamese text found"
 fresh; echo '{"mcpServers":{}}' >>"$work/r/skills/hd-core/references/git.md"
 expect_fail "MCP config outside the registry" "belong only in"
 
+fresh; edit skills/hd-ai/SKILL.md 's/^license: MIT\n//m'
+expect_fail "missing license" "license must be MIT"
+
+fresh; edit skills/hd-ai/SKILL.md 's/^name: hd-ai$/name: [hd-ai]/m'
+expect_fail "wrong YAML type" "wrong YAML type for: name"
+
+fresh; edit skills/hd-index/SKILL.md 's/(\| `hd-ai` \| — \|[^\n]*\n)/$1| `hd-ghost` | — | Never |\n/'
+expect_fail "map lists an unknown skill" "map lists unknown skill 'hd-ghost'"
+
+fresh; edit skills/hd-core/SKILL.md 's/\| Branches, commits, PRs, merging \|/| Branches only |/'
+expect_fail "map out of sync with a SKILL.md table" "skill map out of date"
+
+fresh; mkdir -p "$work/r/skills/hd-planned/references"; echo "# Real content" >"$work/r/skills/hd-planned/references/x.md"
+edit skills/hd-index/SKILL.md 's/(\| `hd-ai` \| — \|[^\n]*\n)/$1| `hd-planned` | `x.md` | Later |\n/'
+expect_fail "planned skill with a non-stub topic" "must be a <!-- TODO --> stub"
+
+fresh; echo "Template: [AGENTS template](assets/AGENTS.template.md)." >>"$work/r/skills/hd-core/references/docs.md"
+if run; then echo "✓ assets/ markdown link allowed in a topic file"; else echo "✗ assets/ markdown link rejected"; tail -3 "$work/out"; fails=$((fails+1)); fi
+
 [ "$fails" -eq 0 ] || { echo "$fails case(s) failed"; exit 1; }
 echo "OK"

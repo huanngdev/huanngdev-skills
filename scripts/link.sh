@@ -15,20 +15,19 @@ for a in "$@"; do
     *) echo "usage: $0 [--unlink] [--dry-run]" >&2; exit 2;;
   esac
 done
-do_() { if $dry; then echo "(dry run) $*"; else "$@"; fi; }
 
 for t in "${targets[@]}"; do
-  if $unlink; then [ -d "$t" ] || continue; else do_ mkdir -p "$t"; fi
+  if $unlink; then [ -d "$t" ] || continue; elif ! $dry; then mkdir -p "$t"; fi
   for s in "$repo"/skills/*/; do
     name=$(basename "$s"); src="${s%/}"; dest="$t/$name"
     if [ -L "$dest" ]; then
       current=$(readlink "$dest")
       if [ "$current" != "$src" ]; then echo "skip $dest (symlink to $current, not this checkout)"; continue; fi
-      if $unlink; then do_ rm "$dest" && echo "unlinked $dest"; else echo "ok $dest"; fi
+      if ! $unlink; then echo "ok $dest"; elif $dry; then echo "would unlink $dest"; else rm "$dest"; echo "unlinked $dest"; fi
       continue
     fi
     $unlink && continue
     if [ -e "$dest" ]; then echo "skip $dest (real file/dir exists)"; continue; fi
-    do_ ln -s "$src" "$dest" && echo "linked $dest"
+    if $dry; then echo "would link $dest"; else ln -s "$src" "$dest"; echo "linked $dest"; fi
   done
 done

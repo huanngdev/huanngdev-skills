@@ -14,6 +14,7 @@ skills/hd-<domain>/scripts/      # optional executables (run, not read)
 templates/SKILL.template.md      # starting point for new skills
 scripts/validate.sh              # must pass before commit (needs bun for YAML parsing)
 scripts/test-validate.sh         # self-test: injects defects, expects validate.sh to fail
+scripts/sync-map.ts              # regenerates the hd-index skill map from every SKILL.md topic table
 scripts/release.sh               # the only way to bump version + tag (§8)
 scripts/link.sh                  # local symlinks (don't combine with the plugin install)
 CHANGELOG.md                     # Keep a Changelog
@@ -21,6 +22,8 @@ LICENSE                          # MIT (declared in plugin.json and every SKILL.
 .github/workflows/               # ci.yml (checks), release.yml (GitHub Release on tag)
 ```
 Nothing else goes inside `skills/` — every folder there is installed for users. A folder without `SKILL.md` is a **planned** skill: its topic files exist as `<!-- TODO -->` stubs and are listed in `hd-index`.
+
+Root `CLAUDE.md` (`@AGENTS.md`) is for agents working on this repo; plugins don't load it, so `claude plugin validate` warns about it — expected.
 
 `skills/hd-index/SKILL.md` is the entry point: global rules for every task + the map of which skill to load when. It is the only skill meant to load on nearly every task, so keep it short.
 
@@ -61,7 +64,7 @@ Nothing else goes inside `skills/` — every folder there is installed for users
 - Rules must come from real corrections or existing project rules, not invention. When unsure, ask the owner.
 
 ## 6. Changing a skill
-1. New topic: add `skills/hd-<domain>/references/<topic>.md`, link it from that `SKILL.md`, add a row to the map in `skills/hd-index/SKILL.md`. New domain skill (rare): copy `templates/SKILL.template.md`, then also update `README.md`.
+1. New topic: add `skills/hd-<domain>/references/<topic>.md` and a row in that `SKILL.md` topic table, then run `bun scripts/sync-map.ts` (never edit the hd-index map by hand; `validate.sh` fails when it is out of date). New domain skill (rare): copy `templates/SKILL.template.md`, then also update `README.md`.
 2. Edit; keep wording terse.
 3. Add one line under `## [Unreleased]` in `CHANGELOG.md` (`### Added|Changed|Removed|Fixed`, prefixed with the skill name).
 4. Run `scripts/validate.sh` and `claude plugin validate .` — both must pass. Changed `validate.sh`? Also run `scripts/test-validate.sh` and add a case for each new check.
@@ -90,11 +93,11 @@ scripts/release.sh minor             # from main: branch release/vX.Y.Z, bump + 
 git switch main && git pull
 scripts/release.sh tag               # tag huanngdev--vX.Y.Z and push it → GitHub Release
 ```
-Step 1 refuses unless: arguments are exactly as above, on `main`, clean, in sync with origin, validators pass, at least one skill, `[Unreleased]` non-empty, the release branch doesn't exist yet. Step 2 (`tag`, also has `--dry-run`) refuses unless HEAD is the merged release commit (last commit touching `plugin.json`) and CI on it succeeded. Only the owner releases — agents run `--dry-run` at most and ask before the real run.
+Step 1 refuses unless: arguments are exactly as above, on `main`, clean, in sync with origin, validators pass, at least one skill, `[Unreleased]` non-empty, the release branch doesn't exist yet. Step 2 (`tag`, also has `--dry-run`) refuses unless HEAD is the merged release commit (last first-parent commit touching `plugin.json`: the squash or merge commit) and CI on it succeeded. Only the owner releases — agents run `--dry-run` at most and ask before the real run.
 
 ## 9. CI
 `.github/workflows/ci.yml` on every PR and push to `main` (also runnable manually):
-- **Skills & manifests** (required): JSON manifests valid, `validate.sh`, `test-validate.sh`, `claude plugin validate` (Claude Code version pinned in the workflow `env`, bumped deliberately), version/changelog consistency, and on PRs "skills changed ⇒ a **new** `[Unreleased]` line vs the base branch". `release/v*` PRs may touch only `plugin.json` + `CHANGELOG.md`.
+- **Skills & manifests** (required): JSON manifests valid, `validate.sh`, `test-validate.sh`, `claude plugin validate` (Claude Code version pinned in the workflow `env`, bumped deliberately), version/changelog consistency, and on PRs "skills changed ⇒ a **new** `[Unreleased]` line vs the base branch". `release/v*` PRs may touch only `plugin.json` (version only, increasing, matching the branch) + `CHANGELOG.md` (with that version's section).
 - **Scripts & workflows** (required): `shellcheck scripts/*.sh`, `actionlint` on workflows.
 - **Scripts on macOS (bash 3.2)**: runs the validators with `/bin/bash` on macOS (portability).
 

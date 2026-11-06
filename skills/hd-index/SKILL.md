@@ -49,29 +49,29 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 | Skill | Topic file | Read when the task touches |
 |---|---|---|
 | `hd-index` | `docs-sources.md` | Before using any library/tool API; adding MCP servers or vendor skills |
-| `hd-core` | `workflow.md` | Any implementation, bug fix, refactor; before hand-off |
-| | `git.md` | Branches, commits, PRs, releases |
-| | `docs.md` | AGENTS.md, CLAUDE.md, ADRs, changelog, plans, milestones |
-| | `typescript.md` | Any TypeScript code |
-| | `testing.md` | Writing or fixing tests |
-| | `security.md` | Secrets, untrusted input, redirects, outbound URLs, CSRF, headers, logging, dependencies |
-| `hd-frontend` | `react.md` | App setup, structure, routes/guards, components, hooks, tests |
-| | `state.md` | API client, queries, mutations, API errors, client/URL state |
-| | `ui.md` | Layout, density, Tailwind/theme tokens, shadcn, scroll areas, theming, icons, motion |
-| | `a11y.md` | Keyboard, focus, semantics, reduced motion |
-| `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar, CORS, logging, health/shutdown |
-| | `data.md` | Schema, queries, migrations, transactions, seeds |
-| | `storage.md` | File uploads (S3-compatible), caching (Redis) |
-| `hd-validate` | `schemas.md` | Zod schemas, DTOs, shared contracts, parsing |
-| | `env.md` | Env loading/validation, new env vars |
-| | `forms.md` | Frontend forms, client-side validation |
-| `hd-auth` | `setup.md` | Better Auth package, Hono mounting, sessions, passwords |
-| | `permissions.md` | Roles, permissions, ownership checks |
+| `hd-core` | `workflow.md` | Starting any task, ask-first boundaries, hand-off and reporting |
+| | `git.md` | Branches, commits, PRs, merging |
+| | `docs.md` | AGENTS.md, CLAUDE.md, ADRs, plans, milestones/progress, writing project docs |
+| | `typescript.md` | Writing or reviewing any TypeScript |
+| | `testing.md` | Writing or fixing tests, deciding what to test |
+| | `security.md` | Secrets, untrusted input, redirects, outbound URLs, CSRF, headers, cookies, audit logging, dependencies |
+| `hd-frontend` | `react.md` | App setup, folder structure, routes/guards, components & hooks, error boundaries, frontend tests |
+| | `state.md` | API calls, queries, mutations, errors from the API, client/URL state |
+| | `ui.md` | Layout, Tailwind/theme tokens, shadcn components, scroll, dark mode, density, icons, motion |
+| | `a11y.md` | Keyboard, focus, labels, contrast, reduced motion |
+| `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar docs, CORS, logging, health/shutdown, realtime |
+| | `data.md` | Schema, queries, migrations, transactions, idempotency, seeds, DB tests |
+| | `storage.md` | File uploads (S3-compatible) or caching (Redis) |
+| `hd-validate` | `schemas.md` | Writing schemas/DTOs, shared contracts, parsing data, error formatting |
+| | `env.md` | Creating or changing any app's env loading, `.env.example`, new env vars |
+| | `forms.md` | Frontend forms and client-side validation |
+| `hd-auth` | `setup.md` | Creating/changing the auth package, Hono mounting, session middleware, schema/IDs, env, CSRF/origin, rate limit, session revocation, passwords, MCP plugin |
+| | `permissions.md` | Roles, permissions, protecting a use case, ownership checks |
 | `hd-ai` | — | Any LLM call, AI streaming, AI SDK / OpenRouter code |
-| `hd-infra` | `monorepo.md` | Workspace layout, Turborepo, root scripts, package boundaries |
-| | `packages.md` | Internal package builds (tsdown), shared tsconfig/oxlint/oxfmt/Vitest presets |
-| | `ci.md` | GitHub Actions, CI checks, Dependabot |
-| | `docker.md` | Docker, Compose, local infrastructure |
+| `hd-infra` | `monorepo.md` | turbo.json, workspaces, layout, root scripts, shared code, adding an app/package |
+| | `packages.md` | Building an internal package (tsdown, exports, isolatedDeclarations), tsconfig/oxlint/oxfmt/vitest presets in `packages/config` |
+| | `docker.md` | compose.yaml, local services, `.env` / `.env.example`, generating secrets |
+| | `ci.md` | `.github/workflows`, CI checks, caching in CI, Dependabot |
 
 `hd-validate` (Zod), `hd-auth` (Better Auth) and `hd-ai` (AI SDK + OpenRouter) cover only how we use those libraries; API details come from their docs MCP / official skills. Other third-party tools and services (Vercel, Cloudflare, Neon, …) get no hd-* skill: use the vendor's official skill or docs (registry) when the task touches them. Vendor advice never overrides project rules.
 

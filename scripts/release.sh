@@ -36,8 +36,9 @@ if [ "$cmd" = tag ]; then
   tag="huanngdev--v$v"
   git rev-parse -q --verify "refs/tags/$tag" >/dev/null && die "tag $tag already exists"
   grep -q "^## \[$v\] - " CHANGELOG.md || die "CHANGELOG.md has no section for $v"
-  # The release commit is the last one that changed the manifest; nothing may land after it.
-  release_sha=$(git log -1 --format=%H -- "$manifest")
+  # The release commit is the last commit on main's first-parent line that changed the manifest
+  # (the squash commit, or the merge commit of a merged PR); nothing may land after it.
+  release_sha=$(git log -1 --first-parent --format=%H -- "$manifest")
   [ "$(git rev-parse HEAD)" = "$release_sha" ] ||
     die "main has commits after the release commit ${release_sha:0:7}; tag it by hand (git tag -a $tag $release_sha) or cut a new release"
   ci=$(gh run list --commit "$release_sha" --workflow ci.yml --json conclusion --jq '.[0].conclusion // ""')
