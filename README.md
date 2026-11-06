@@ -2,11 +2,22 @@
 
 Skills cá nhân chứa style làm việc của huanngdev, dùng được ở mọi project và mọi agent theo chuẩn [Agent Skills](https://agentskills.io) (Claude Code, Codex, Cursor, OpenCode, Gemini CLI…). Nội dung skill viết bằng tiếng Anh để tiết kiệm token.
 
-> **Trạng thái:** chưa có skill nào, chưa release (version `0.0.0`). Đừng cài plugin cho tới bản `0.1.0`.
+> **Trạng thái:** chưa release (version `0.0.0`). Đừng cài plugin cho tới bản `0.1.0`.
 
-| Skill | Load khi |
-|---|---|
-| _(chưa có)_ | |
+`hd-index` là file index: rules chung cho mọi task + bản đồ "task nào → skill nào → file nào". Ít skill, nhiều file: mỗi nhóm một skill, mỗi chủ đề một file trong `references/` (agent chỉ đọc file cần).
+
+| Skill | Files trong `references/` | Trạng thái |
+|---|---|---|
+| `hd-index` | — (rules chung + bản đồ) | ✅ |
+| `hd-core` | workflow, git, docs, typescript, testing, security | 📁 planned |
+| `hd-frontend` | react, state, ui, a11y | 📁 planned |
+| `hd-backend` | api, data, storage | ✅ |
+| `hd-validate` | schemas, env, forms | ✅ |
+| `hd-auth` | setup, permissions | ✅ |
+| `hd-ai` | — (một file) | ✅ |
+| `hd-infra` | monorepo, docker, ci (+ `assets/gen-env.ts`) | ✅ |
+
+Không có skill cho dịch vụ bên thứ ba (Vercel, Cloudflare, Neon…) — dùng skill official của vendor. Ngoại lệ: Zod, Better Auth, AI SDK có skill riêng nhưng chỉ ghi quy ước của mình + MCP docs.
 
 ## Cài đặt
 

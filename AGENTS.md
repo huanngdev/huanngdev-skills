@@ -6,10 +6,11 @@ Personal, portable Agent Skills (https://agentskills.io) holding huanngdev's eng
 ```
 .claude-plugin/plugin.json       # plugin "huanngdev" (bump version on release)
 .claude-plugin/marketplace.json  # marketplace "huanngdev-skills", source "./"
-skills/hd-<topic>/SKILL.md       # one folder per skill
-skills/hd-<topic>/references/    # optional, loaded on demand
-skills/hd-<topic>/assets/        # optional templates/files the skill outputs
-skills/hd-<topic>/scripts/       # optional executables (run, not read)
+skills/hd-index/SKILL.md         # entry point: global rules + skill map
+skills/hd-<domain>/SKILL.md      # short router for the domain
+skills/hd-<domain>/references/   # one file per topic, loaded on demand
+skills/hd-<domain>/assets/       # optional templates/files the skill outputs
+skills/hd-<domain>/scripts/      # optional executables (run, not read)
 templates/SKILL.template.md      # starting point for new skills
 scripts/validate.sh              # must pass before commit
 scripts/release.sh               # the only way to bump version + tag (§8)
@@ -17,7 +18,9 @@ scripts/link.sh                  # local symlinks (don't combine with the plugin
 CHANGELOG.md                     # Keep a Changelog
 .github/workflows/               # ci.yml (checks), release.yml (GitHub Release on tag)
 ```
-Nothing else goes inside `skills/` (except `.gitkeep`) — every folder there is installed for users.
+Nothing else goes inside `skills/` — every folder there is installed for users. A folder without `SKILL.md` is a **planned** skill: its topic files exist as `<!-- TODO -->` stubs and are listed in `hd-index`.
+
+`skills/hd-index/SKILL.md` is the entry point: global rules for every task + the map of which skill to load when. It is the only skill meant to load on nearly every task, so keep it short.
 
 ## 2. Language
 - Everything under `skills/` and `templates/` is **English** (cheaper in tokens, same compliance). `validate.sh` rejects Vietnamese diacritics there.
@@ -39,14 +42,23 @@ Nothing else goes inside `skills/` (except `.gitkeep`) — every folder there is
 - Relative paths only; never hardcode `~/.claude` or absolute paths.
 - Don't duplicate a rule across skills; link to the owning skill by name instead.
 
-## 5. Scope of a skill
+## 5. Naming & scope
+- **Few skills, many files.** Current skills: `hd-index`, `hd-core` (cross-cutting), `hd-frontend`, `hd-backend`, `hd-infra`, `hd-validate`, `hd-auth`, `hd-ai`. Add a new skill only for a genuinely new domain; otherwise add a topic file.
+- Skills are flat (`skills/<name>/SKILL.md`); agents don't discover nested skill folders.
+- `SKILL.md` of a domain skill = shared rules for the whole domain (a few lines) + a table linking every `references/<topic>.md` with "read when …". Every topic file must be linked there and listed in `hd-index` (`validate.sh` enforces both).
+- Topic files: one topic each, ≤ ~100 lines, no links to other topic files (one level deep).
+- No skills for third-party services (Vercel, Cloudflare, Neon, …) — those come from vendors' official skills.
+- Exception: a library used in every project (Zod, Better Auth, AI SDK) may get an `hd-*` skill, limited to **our conventions** plus how to reach its docs (docs MCP entry for `.mcp.json`, official skill install command). Never restate its API docs.
+- Docs sources live only in `skills/hd-index/references/docs-sources.md` (one row per tech: MCP key, official skill, llms.txt; MCP JSON block). Other skills reference it with the exact line `Docs: hd-index docs sources (<Tech>, …).` — never embed MCP configs or install commands elsewhere. New rows need a verified URL/command.
+- Facts about tools (flags, config keys, API names) must be verified — run them or read current docs — before they go into a skill.
+- Global rules that apply to every task go in `hd-index`, not repeated in other skills.
 - One coherent trigger per skill. Split when two halves load for different tasks (UI vs backend); merge when they always load together.
 - Each extra skill costs ~80 tokens of always-loaded metadata — don't create one for < ~10 lines of rules.
 - Portable style only. Anything true for just one project belongs in that project's AGENTS.md, not here.
 - Rules must come from real corrections or existing project rules, not invention. When unsure, ask the owner.
 
 ## 6. Changing a skill
-1. New skill: copy `templates/SKILL.template.md` to `skills/hd-<topic>/SKILL.md`; add it to the table in `README.md`.
+1. New topic: add `skills/hd-<domain>/references/<topic>.md`, link it from that `SKILL.md`, add a row to the map in `skills/hd-index/SKILL.md`. New domain skill (rare): copy `templates/SKILL.template.md`, then also update `README.md`.
 2. Edit; keep wording terse.
 3. Add one line under `## [Unreleased]` in `CHANGELOG.md` (`### Added|Changed|Removed|Fixed`, prefixed with the skill name).
 4. Run `scripts/validate.sh` and `claude plugin validate .` — both must pass.

@@ -1,18 +1,21 @@
 ---
-name: hd-<topic>
-description: <What it does, third person, concrete keywords>. Use when <trigger situations: file types, technologies, user verbs> in huanngdev's projects.
+name: hd-<domain>
+description: huanngdev's <domain> rules covering <topic>, <topic> and <topic>. Use when <trigger situations: file types, technologies, user verbs> in huanngdev's projects.
 license: MIT
 metadata:
   author: huanngdev
 ---
 
-# <Title>
+# <Domain>
 
-Project rules (AGENTS.md) win on conflict.
+Project rules (AGENTS.md) win on conflict. Global rules: `hd-index`.
 
-## <Rule group>
-- <Only what the agent would not do by default: decisions, thresholds, names, commands.>
-- <Short imperative sentence. One rule per bullet.>
+Docs: hd-index docs sources (<Tech>, …).
 
-## Details
-Read `references/<file>.md` only when <specific condition>.
+## Always (whole domain, keep to a few lines)
+- <Rule every task in this domain needs.>
+
+## Topics — read only what the task touches
+| File | Read when |
+|---|---|
+| `references/<topic>.md` | <specific condition> |

@@ -7,11 +7,28 @@ cd "$(dirname "$0")/.."
 MAX_BODY_LINES=${MAX_BODY_LINES:-150}   # spec allows 500; we aim far lower
 MAX_DESC=1024
 errors=0; total_desc=0
+err() { echo "  ✗ $1"; errors=$((errors+1)); }
 shopt -s nullglob
 skill_files=(skills/*/SKILL.md)
 [ ${#skill_files[@]} -gt 0 ] || echo "(no skills yet)"
 
-err() { echo "  ✗ $1"; errors=$((errors+1)); }
+# Every skill folder must be listed in hd-index; folders without SKILL.md are "planned".
+index=skills/hd-index/SKILL.md
+planned=()
+for d in skills/*/; do
+  n=$(basename "$d")
+  [ -f "$d/SKILL.md" ] || planned+=("$n")
+  if [ -f "$index" ] && [ "$n" != hd-index ] && ! grep -q "\`$n\`" "$index"; then
+    echo "• $n"; err "not listed in $index skill map"
+  fi
+  for r in "$d"references/*.md; do
+    rn=$(basename "$r")
+    if [ -f "$index" ] && ! grep -q "\`$rn\`" "$index"; then echo "• $n"; err "references/$rn not listed in $index"; fi
+    if [ -f "$d/SKILL.md" ] && ! grep -q "references/$rn" "$d/SKILL.md"; then echo "• $n"; err "references/$rn not linked from SKILL.md (orphan)"; fi
+  done
+done
+[ ${#planned[@]} -eq 0 ] || echo "planned (no SKILL.md yet): ${planned[*]}"
+
 
 for f in ${skill_files[@]+"${skill_files[@]}"}; do
   dir=$(basename "$(dirname "$f")")
@@ -38,6 +55,16 @@ for f in ${skill_files[@]+"${skill_files[@]}"}; do
   words=$(wc -w < "$f" | tr -d ' ')
   total_desc=$((total_desc + ${#desc}))
   echo "  desc=${#desc}ch  body=${body_lines}L  ~$((words*13/10)) tokens when loaded"
+done
+
+# Docs sources live only in hd-index (AGENTS.md §5)
+registry=skills/hd-index/references/docs-sources.md
+if leaks=$(grep -rnE 'mcpServers|"type": *"http"|skills add ' skills --include='*.md' | grep -v "^$registry:"); then
+  echo "• docs sources"; echo "$leaks" | head -5 | sed 's/^/  /'; err "MCP config / skill install commands belong only in $registry"
+fi
+for f in ${skill_files[@]+"${skill_files[@]}"}; do
+  case $f in skills/hd-index/*) continue;; esac
+  grep -q '^Docs: hd-index docs sources (' "$f" || { echo "• $(basename "$(dirname "$f")")"; err "missing line 'Docs: hd-index docs sources (<Tech>, …).'"; }
 done
 
 # English only under skills/ and templates/ (AGENTS.md §2)
