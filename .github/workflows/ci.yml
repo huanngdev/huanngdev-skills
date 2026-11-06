@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  skills:
+    name: Skills & manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # PR diff + tags
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: JSON manifests are valid
+        run: |
+          for f in .claude-plugin/*.json; do jq empty "$f" || { echo "::error file=$f::invalid JSON"; exit 1; }; done
+
+      - name: Validate skills (spec, size, English only, links)
+        run: scripts/validate.sh
+
+      - name: Validate plugin + marketplace (claude plugin validate)
+        run: npx -y @anthropic-ai/claude-code plugin validate .
+
+      - name: Version and changelog are consistent
+        run: |
+          v=$(jq -r .version .claude-plugin/plugin.json)
+          [[ $v =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::plugin.json version '$v' is not semver"; exit 1; }
+          if [ "$v" != 0.0.0 ]; then # 0.0.0 = nothing released yet
+            grep -q "^## \[$v\] - " CHANGELOG.md || { echo "::error file=CHANGELOG.md::no entry for $v"; exit 1; }
+          fi
+          if jq -e '.plugins[0].version' .claude-plugin/marketplace.json >/dev/null; then
+            echo "::error file=.claude-plugin/marketplace.json::keep version only in plugin.json"; exit 1
+          fi
+
+      - name: Skill changes need a changelog line (PR only)
+        if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release/')
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if git diff --name-only "$BASE"...HEAD | grep -qE '^(skills|\.claude-plugin)/'; then
+            unreleased=$(awk '/^## \[Unreleased\]/{f=1;next} /^## \[/{f=0} /^\[/{f=0} f' CHANGELOG.md | sed '/^[[:space:]]*$/d')
+            [ -n "$unreleased" ] || { echo "::error file=CHANGELOG.md::skills/ changed — add a line under [Unreleased]"; exit 1; }
+          fi
+
+  lint:
+    name: Scripts & workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: shellcheck
+        run: shellcheck scripts/*.sh
+
+      - name: actionlint
+        run: |
+          bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+          ./actionlint -color

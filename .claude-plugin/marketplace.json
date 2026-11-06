@@ -1,0 +1,12 @@
+{
+  "name": "huanngdev-skills",
+  "owner": { "name": "huanngdev" },
+  "metadata": { "description": "Personal skills of huanngdev, portable across projects and agents." },
+  "plugins": [
+    {
+      "name": "huanngdev",
+      "source": "./",
+      "description": "Personal engineering style skills (hd-*)."
+    }
+  ]
+}

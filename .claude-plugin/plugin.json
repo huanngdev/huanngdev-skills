@@ -1,0 +1,10 @@
+{
+  "name": "huanngdev",
+  "version": "0.0.0",
+  "description": "huanngdev personal engineering style skills, portable across projects.",
+  "author": {
+    "name": "huanngdev"
+  },
+  "repository": "https://github.com/huanngdev/huanngdev-skills",
+  "license": "MIT"
+}

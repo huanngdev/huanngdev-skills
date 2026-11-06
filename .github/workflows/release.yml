@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags: ['huanngdev--v*']
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create GitHub Release from CHANGELOG
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          v=${TAG#huanngdev--v}
+          [ "$(jq -r .version .claude-plugin/plugin.json)" = "$v" ] || { echo "::error::tag $TAG != plugin.json version"; exit 1; }
+          awk -v v="$v" '$0 ~ "^## \\[" v "\\]"{f=1;next} /^## \[/{f=0} f' CHANGELOG.md > notes.md
+          gh release create "$TAG" --title "huanngdev v$v" --notes-file notes.md
