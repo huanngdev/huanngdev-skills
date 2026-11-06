@@ -17,8 +17,12 @@ Goal: research docs fast, accurately and for the **installed** version. Order: d
 | tsdown | — | — | `https://tsdown.dev/llms.txt` |
 | Vite / Vitest | — | — | `https://vite.dev/llms.txt`, `https://vitest.dev/llms.txt` |
 | React | — | — | `https://react.dev/llms.txt` |
-| TanStack | `tanstack` | — | `https://tanstack.com/llms.txt` |
-| shadcn/ui | `shadcn` | — | `https://ui.shadcn.com/llms.txt` |
+| React Router | — | `remix-run/react-router -s react-router` | `https://raw.githubusercontent.com/remix-run/react-router/refs/tags/react-router@<version>/docs/<path>.md` |
+| axios | — | — | `https://axios-http.com/llms.txt` |
+| Zustand | — | — | `https://zustand.docs.pmnd.rs/llms.txt` |
+| Motion | — | — | `https://motion.dev/llms.txt` |
+| TanStack | `tanstack` | — | `https://tanstack.com/llms.txt`, `https://tanstack.com/query/latest/llms.txt` |
+| shadcn/ui | `shadcn` | `shadcn-ui/ui -s shadcn` | `https://ui.shadcn.com/llms.txt` |
 | Browser checks | `playwright` | — | — |
 
 ## MCP entries (merge into the project's `.mcp.json`; add only what the project uses)

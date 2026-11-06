@@ -1,6 +1,6 @@
 ---
 name: hd-index
-description: Entry point for huanngdev's skills. Global rules that apply to every task (challenge the user's proposal, Bun-first, Oxc/Vite toolchain, strict TypeScript, official docs, verify before claiming done) and a map of which hd-* skill to load for which task. Use when starting any coding, design, review or planning task in huanngdev's projects, before picking other hd-* skills.
+description: Entry point for huanngdev's skills: global rules (challenge the user, Bun + Oxc/Vite toolchain, docs research via MCP and skills) and the map of which hd-* skill and file to read. Use when starting any coding, review or planning task in huanngdev's projects.
 license: MIT
 metadata:
   author: huanngdev
@@ -54,9 +54,9 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 | | `typescript.md` | Any TypeScript code |
 | | `testing.md` | Writing or fixing tests |
 | | `security.md` | Secrets, env, untrusted input, logging, PII |
-| `hd-frontend` | `react.md` | Components, hooks, Server/Client boundaries |
-| | `state.md` | Client state, data fetching, cache invalidation, forms |
-| | `ui.md` | Styling, Tailwind, component kit, theming, UI copy |
+| `hd-frontend` | `react.md` | App setup, structure, routes/guards, components, hooks, tests |
+| | `state.md` | API client, queries, mutations, API errors, client/URL state |
+| | `ui.md` | Layout, density, shadcn, scroll areas, theming, icons, motion |
 | | `a11y.md` | Keyboard, focus, semantics, reduced motion |
 | `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination |
 | | `data.md` | Schema, queries, migrations, transactions, seeds |

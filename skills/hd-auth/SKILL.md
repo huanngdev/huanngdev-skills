@@ -1,6 +1,6 @@
 ---
 name: hd-auth
-description: huanngdev's authentication and authorization rules with Better Auth on Hono + Bun + Drizzle — one shared auth package, cookie sessions, session middleware, role/permission checks in services, password hashing, and the Better Auth docs MCP. Use when adding or changing sign-in/sign-up, sessions, users, roles, permissions, protected routes, or anything importing better-auth.
+description: Better Auth conventions: shared auth package, cookie sessions, Hono middleware, admin/member permissions checked in services. Use when changing sign-in, sessions, users, roles, permissions or protected routes.
 license: MIT
 metadata:
   author: huanngdev

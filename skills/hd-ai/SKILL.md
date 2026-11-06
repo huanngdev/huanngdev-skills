@@ -1,6 +1,6 @@
 ---
 name: hd-ai
-description: huanngdev's defaults for LLM features with the Vercel AI SDK and OpenRouter — one provider module, model IDs from env, server-only keys, structured output with Zod, safety rules for model output, and testing without real API calls. Use when adding or changing code that calls an LLM, streams AI responses to the UI, or imports ai, @ai-sdk/*, or @openrouter/ai-sdk-provider.
+description: AI SDK + OpenRouter conventions: one provider module, model IDs from env, server-only keys, Zod structured output, output safety, mock-model tests. Use when adding or changing code that calls an LLM or streams AI output.
 license: MIT
 metadata:
   author: huanngdev

@@ -14,5 +14,11 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 - `hd-ai`: AI SDK + OpenRouter defaults, structured output, safety, mock-model tests.
 - `hd-infra`: tests run with `bun --bun vitest run`; standard compose services.
 - `hd-index`: docs-research rule and a single docs-sources registry (docs MCP, official skills, llms.txt per tech); every skill points to it with one standard line.
+- `hd-frontend`: Vite + React 19 with Rust React Compiler, React Router route object + loader guards, TanStack Query + axios with schema-parsed responses, Zustand/URL state, shadcn preset b0, minimal dense UI rules, ScrollArea fade, system dark mode, WCAG 2.2 AA.
+- `hd-backend`: frontend calls the API with axios + shared schemas (no `hc`).
+- `hd-core`: workflow and hand-off, git/PR conventions, project docs + AGENTS.md template, TypeScript 7 rules, testing (what must be tested, no coverage gate), OWASP-based security defaults.
+
+### Changed
+- Shorter skill descriptions to cut always-loaded tokens.
 
 [Unreleased]: https://github.com/huanngdev/huanngdev-skills/commits/main

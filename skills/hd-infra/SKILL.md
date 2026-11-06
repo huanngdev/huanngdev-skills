@@ -1,6 +1,6 @@
 ---
 name: hd-infra
-description: huanngdev's infrastructure rules for Turborepo + Bun monorepos (internal packages built with tsdown, shared packages/config for tsconfig, oxlint, oxfmt and Vitest, turbo.json cache limits and TUI), Docker Compose with generated secrets in .env files, and GitHub Actions CI. Use when creating or changing turbo.json, workspaces, packages/*, lint/format/tsconfig/vitest config, compose.yaml, .env/.env.example, or .github/workflows.
+description: Monorepo rules: Turborepo + Bun, tsdown packages, shared oxlint/oxfmt/tsconfig/Vitest config, Docker Compose with generated .env secrets, GitHub Actions. Use when changing turbo.json, workspaces, packages, tool configs, compose, .env or CI.
 license: MIT
 metadata:
   author: huanngdev

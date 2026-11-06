@@ -9,8 +9,8 @@ Skills cá nhân chứa style làm việc của huanngdev, dùng được ở m�
 | Skill | Files trong `references/` | Trạng thái |
 |---|---|---|
 | `hd-index` | — (rules chung + bản đồ) | ✅ |
-| `hd-core` | workflow, git, docs, typescript, testing, security | 📁 planned |
-| `hd-frontend` | react, state, ui, a11y | 📁 planned |
+| `hd-core` | workflow, git, docs, typescript, testing, security (+ `assets/AGENTS.template.md`) | ✅ |
+| `hd-frontend` | react, state, ui, a11y | ✅ |
 | `hd-backend` | api, data, storage | ✅ |
 | `hd-validate` | schemas, env, forms | ✅ |
 | `hd-auth` | setup, permissions | ✅ |

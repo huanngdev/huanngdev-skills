@@ -1,6 +1,6 @@
 ---
 name: hd-backend
-description: huanngdev's backend rules for Hono on Bun — layered routes/services/repositories, shared error and response shapes, cursor pagination, PostgreSQL with Drizzle (Bun.sql, uuidv7 ids, migrations, transactions, faker seeds), MinIO storage and Redis cache via Bun built-ins. Use when building or changing API routes, services, database schema, queries, migrations, seeds, file storage or caching.
+description: Hono + Bun backend rules: route/service/repository layers, shared errors and cursor pagination, PostgreSQL + Drizzle, MinIO storage, Redis cache. Use when changing API routes, services, DB schema, migrations, seeds, storage or cache.
 license: MIT
 metadata:
   author: huanngdev

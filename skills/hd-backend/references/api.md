@@ -4,15 +4,14 @@
 ```
 apps/api/src/
   env.ts               # Zod-validated env, imported first (see hd-validate)
-  app.ts               # Hono app: middleware + routes chained, exports `type AppType`
+  app.ts               # Hono app: middleware + routes
   index.ts             # export default { port: env.PORT, fetch: app.fetch }
   routes/<feature>.ts  # HTTP only
   services/<feature>.ts
 packages/db            # schema + repositories (see data.md)
 packages/shared        # schemas, DTOs, error codes, page schema
 ```
-- REST JSON. Chain route definitions (`new Hono().get(…).post(…)`) so types flow; export `type AppType = typeof app`.
-- Frontend calls through `hc<AppType>()` from `hono/client`, importing the type only (`import type { AppType }`). No hand-written fetch wrappers per endpoint.
+- REST JSON over HTTP. The frontend calls it with its axios instance (`hd-frontend` state.md); request/response types come from the shared schemas in `packages/shared`, so both sides stay in sync.
 
 ## Layers (reuse, nothing goes missing on change)
 - **Route**: validate input (`validate()` below) → call **one** service function → return DTO. No business logic, no Drizzle.

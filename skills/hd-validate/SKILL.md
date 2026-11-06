@@ -1,6 +1,6 @@
 ---
 name: hd-validate
-description: huanngdev's validation rules — Zod (latest major) for every boundary from frontend forms to backend input, shared schemas as the single source of types, and mandatory Zod validation of every app's .env before it starts. Use when writing or changing schemas, DTOs, forms, request/response validation, env files or env loading, or anything that parses untrusted data.
+description: Zod everywhere: shared schemas from forms to API, parsing untrusted data, mandatory .env validation at startup. Use when writing schemas, DTOs, forms, request validation, env loading or parsing external data.
 license: MIT
 metadata:
   author: huanngdev
