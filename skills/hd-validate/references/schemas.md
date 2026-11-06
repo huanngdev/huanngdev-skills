@@ -15,7 +15,7 @@ packages/shared/src/
 - Top-level formats: `z.email()`, `z.url()`, `z.uuid()`, `z.iso.datetime()` (not `z.string().email()`).
 - Objects are strict about intent: `z.strictObject()` for inputs where unknown keys are a bug; `z.object()` otherwise.
 - Query/params arrive as strings: `z.coerce.number().int()`, `z.stringbool()`.
-- Money in contracts is an integer minor-unit (`z.int().nonnegative()`) or a decimal string — never a float.
+- Money in contracts is integer minor units `z.int()` (+ `.nonnegative()` when it can't be negative) next to a `currency` code; a digit string only when the DB uses `mode: "bigint"` (`hd-backend` data.md). Never a float.
 - IDs: `z.uuid()`. Dates over JSON: ISO strings (`z.iso.datetime()`), converted at the edge.
 - Transformations (`.transform`) only at the edge that needs them; keep shared DTO schemas serializable.
 

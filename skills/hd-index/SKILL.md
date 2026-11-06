@@ -1,6 +1,6 @@
 ---
 name: hd-index
-description: Entry point for huanngdev's skills: global rules (challenge the user, Bun + Oxc/Vite toolchain, docs research via MCP and skills) and the map of which hd-* skill and file to read. Use when starting any coding, review or planning task in huanngdev's projects.
+description: "Entry point for huanngdev's skills: global rules (challenge the user, Bun + Oxc/Vite toolchain, docs research via MCP and skills) and the map of which hd-* skill and file to read. Use when starting any coding, review or planning task in huanngdev's projects."
 license: MIT
 metadata:
   author: huanngdev
@@ -35,12 +35,13 @@ Precedence: user's explicit decision > project `AGENTS.md` / `CODE_RULES.md` > h
 
 ### Docs research (every technology)
 - Never code a library API from memory. Before using a technology, look it up in `references/docs-sources.md` and use its docs MCP / official skill / `llms.txt`, matching the installed version.
-- If the project lacks a listed MCP or skill it needs, add it to the project (that file says how).
+- If the project lacks a listed MCP or skill it needs, propose adding it (it changes project config: ask first, see that file); meanwhile use the `llms.txt` / docs fallback.
 - Technology not listed: search for an official docs MCP, skill or `llms.txt` first, then propose a registry row to the user.
 
 ### Language
 - Code, identifiers, comments, commits, PRs, logs: English.
-- Chat with the user: Vietnamese. Project docs: the language the project uses.
+- Chat with the user: Vietnamese.
+- Project docs (`AGENTS.md`, `docs/`): the language the project already uses; new projects default to Vietnamese with English technical terms. This is the only language rule; other skills don't restate it.
 
 ## Skill map
 Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.md`. Load the skill, then read **only** the topic files the task touches. If a skill or file isn't there yet, skip it silently.
@@ -53,25 +54,26 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 | | `docs.md` | AGENTS.md, CLAUDE.md, ADRs, changelog, plans, milestones |
 | | `typescript.md` | Any TypeScript code |
 | | `testing.md` | Writing or fixing tests |
-| | `security.md` | Secrets, env, untrusted input, logging, PII |
+| | `security.md` | Secrets, untrusted input, redirects, outbound URLs, CSRF, headers, logging, dependencies |
 | `hd-frontend` | `react.md` | App setup, structure, routes/guards, components, hooks, tests |
 | | `state.md` | API client, queries, mutations, API errors, client/URL state |
-| | `ui.md` | Layout, density, shadcn, scroll areas, theming, icons, motion |
+| | `ui.md` | Layout, density, Tailwind/theme tokens, shadcn, scroll areas, theming, icons, motion |
 | | `a11y.md` | Keyboard, focus, semantics, reduced motion |
-| `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar |
+| `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar, CORS, logging, health/shutdown |
 | | `data.md` | Schema, queries, migrations, transactions, seeds |
-| | `storage.md` | File uploads (MinIO/S3), caching (Redis) |
+| | `storage.md` | File uploads (S3-compatible), caching (Redis) |
 | `hd-validate` | `schemas.md` | Zod schemas, DTOs, shared contracts, parsing |
 | | `env.md` | Env loading/validation, new env vars |
 | | `forms.md` | Frontend forms, client-side validation |
 | `hd-auth` | `setup.md` | Better Auth package, Hono mounting, sessions, passwords |
 | | `permissions.md` | Roles, permissions, ownership checks |
 | `hd-ai` | — | Any LLM call, AI streaming, AI SDK / OpenRouter code |
-| `hd-infra` | `monorepo.md` | Workspace layout, Turborepo, shared configs, package boundaries |
+| `hd-infra` | `monorepo.md` | Workspace layout, Turborepo, root scripts, package boundaries |
+| | `packages.md` | Internal package builds (tsdown), shared tsconfig/oxlint/oxfmt/Vitest presets |
 | | `ci.md` | GitHub Actions, CI checks, Dependabot |
 | | `docker.md` | Docker, Compose, local infrastructure |
 
-`hd-validate` (Zod), `hd-auth` (Better Auth) and `hd-ai` (AI SDK + OpenRouter) cover only how we use those libraries; API details come from their docs MCP / official skills. Other third-party services (Vercel, Cloudflare, Neon, shadcn, …) are not covered: use the vendor's official skill or docs when the task touches them. Vendor advice never overrides project rules.
+`hd-validate` (Zod), `hd-auth` (Better Auth) and `hd-ai` (AI SDK + OpenRouter) cover only how we use those libraries; API details come from their docs MCP / official skills. Other third-party tools and services (Vercel, Cloudflare, Neon, …) get no hd-* skill: use the vendor's official skill or docs (registry) when the task touches them. Vendor advice never overrides project rules.
 
 ## Docs line in every skill
 Skills never embed MCP configs or install commands. They point here with exactly: `Docs: hd-index docs sources (<Tech>, …).`

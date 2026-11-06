@@ -13,8 +13,13 @@
 - `components/ui/*` are generated (Base UI primitives): regenerate via the CLI, don't hand-edit. Compose them in feature components.
 - Theme tokens only (`bg-background`, `text-muted-foreground`, …). No raw colors, arbitrary values (`w-[317px]`) or inline styles.
 
+## Tailwind CSS v4
+- CSS-first config: global CSS has `@import "tailwindcss";` + `@import "shadcn/tailwind.css";` and the tokens in `@theme` / CSS variables. No `tailwind.config.js`.
+- New design tokens go in the global CSS (`@theme`), never as arbitrary values in components.
+
 ## Scrolling
-- Every scrollable region uses shadcn `ScrollArea` with fade: `<ScrollArea fade="y">` (horizontal: `fade="x"`). The fade utilities come from `shadcn/tailwind.css`.
+- Every scrollable region uses shadcn `ScrollArea` with a scroll fade. `ScrollArea` has no fade prop: `scroll-fade` (from `shadcn/tailwind.css`) must sit on its viewport, so add it through the root: `<ScrollArea className="*:data-[slot=scroll-area-viewport]:scroll-fade">` (horizontal: `…:scroll-fade-x`).
+- Write that once in `components/scroll-region.tsx` (a wrapper around `ScrollArea`, outside `components/ui/`) and use the wrapper everywhere.
 - Never `overflow-auto`/`overflow-scroll` on a div for content. Layouts fill the viewport (`h-dvh`) and scroll inside regions, not the whole page.
 
 ## Theme

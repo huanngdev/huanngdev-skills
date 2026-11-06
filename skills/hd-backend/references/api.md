@@ -5,7 +5,7 @@
 apps/api/src/
   env.ts               # Zod-validated env, imported first (see hd-validate)
   app.ts               # Hono app: middleware + routes
-  index.ts             # export default { port: env.PORT, fetch: app.fetch }
+  index.ts             # const server = Bun.serve({ port: env.PORT, fetch: app.fetch }) + shutdown
   routes/<feature>.ts  # HTTP only
   services/<feature>.ts
 packages/db            # schema + repositories (see data.md)
@@ -28,8 +28,10 @@ export const ErrorResponseSchema = z.object({
   error: z.object({ code: ErrorCode, message: z.string(), details: z.unknown().optional() }),
 });
 ```
-- API: one `AppError(code, status, message, details?)` class; services throw it; `app.onError` maps `AppError` → its status + shape, anything else → 500 `INTERNAL` (log the real error with the request id, never return it).
+- API: one `AppError(code, status, message, details?)` class; services throw it.
 - Status per code: 400, 401, 403, 404, 409, 429, 500 in the order above.
+- `app.onError`: `AppError` → its status + shape; Hono `HTTPException` (e.g. malformed JSON → 400, `bodyLimit`) → shared shape with the code for its status (other 4xx → `VALIDATION_FAILED`); anything else → 500 `INTERNAL` (log the real error with the request id, never return it).
+- `app.notFound` returns the shared shape with `NOT_FOUND`, so unknown routes don't leak Hono's plain-text 404.
 - Validation helper (all input goes through it; it also feeds the OpenAPI spec):
 ```ts
 import type { ValidationTargets } from "hono";
@@ -58,7 +60,7 @@ export const validate = <T extends StandardSchemaV1, Target extends keyof Valida
 - Frontend parses non-2xx bodies with `ErrorResponseSchema` and switches on `code`; field errors map onto form fields.
 
 ## Responses & pagination
-- Success returns the DTO directly (`c.json(dto, 201)`); no `{ data }` envelope. No body → 204.
+- Success returns the DTO directly (`c.json(dto, 201)`); no `{ data }` envelope. No body → `c.body(null, 204)` (`c.json` can't send 204).
 - Lists return `{ items: T[], nextCursor: string | null }`, built from `pageSchema(itemSchema)` in `packages/shared`.
 - Query `?cursor=&limit=` (`limit` default 20, max 100). Cursor = opaque base64url of the last row's `(created_at, id)`; order by `created_at desc, id desc`; fetch `limit + 1` to know if there is a next page. Index those columns.
 - No API versioning.
@@ -75,10 +77,15 @@ app.get("/docs", Scalar({ url: "/openapi.json" }));
 - Only when `env.NODE_ENV !== "production"` unless the project decides to publish its docs.
 
 ## Middleware order
-request id → logger → CORS → session (`hd-auth`) → routes → `onError`.
+request id → logger → `secureHeaders` → CORS → `bodyLimit` → session (`hd-auth`) → routes (incl. Better Auth handler) → `onError` / `notFound`.
 - Logging: pino, JSON, child logger per request with `requestId`. Never log secrets, tokens, cookies, passwords or full bodies with PII.
-- CORS: allowed origins from env (`CORS_ORIGINS`, comma list), `credentials: true` when using cookies. Never `*` with credentials.
+- CORS: one `cors()` middleware for the whole app (it also covers `/api/auth/*`), origins from env (`CORS_ORIGINS`, comma list), `credentials: true` when using cookies. Never `*` with credentials.
 - Rate limit auth and expensive endpoints; store counters in Redis when running more than one instance.
+
+## Health & shutdown
+- `GET /health` (process up, no dependencies) and `GET /ready` (DB/Redis reachable, short timeout); both outside auth, never logged at info level.
+- On `SIGTERM`/`SIGINT`: `await server.stop()` (stops accepting, waits for in-flight requests; force with `stop(true)` after a deadline), then close DB/Redis clients and exit.
+- Long work honours the request's `c.req.raw.signal` (client gone → stop).
 
 ## Realtime (only when needed)
 Use Bun's built-in WebSocket through Hono's Bun adapter (`hono/bun`). No Socket.IO or extra servers.

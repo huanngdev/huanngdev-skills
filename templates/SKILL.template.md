@@ -1,6 +1,6 @@
 ---
 name: hd-<domain>
-description: huanngdev's <domain> rules covering <topic>, <topic> and <topic>. Use when <trigger situations: file types, technologies, user verbs> in huanngdev's projects.
+description: "huanngdev's <domain> rules covering <topic>, <topic> and <topic>. Use when <trigger situations: file types, technologies, user verbs> in huanngdev's projects."
 license: MIT
 metadata:
   author: huanngdev

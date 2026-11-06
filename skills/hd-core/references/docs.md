@@ -1,7 +1,7 @@
 # Project docs
 
 ## Language
-Project docs (`AGENTS.md`, `docs/`) in Vietnamese, keeping English technical terms. Code, comments, commits and PRs in English.
+Follow the language rule in `hd-index`; don't translate existing docs.
 
 ## AGENTS.md
 - Short (aim < 120 lines), only what is specific to the repo: one-line purpose, stack + versions, commands, code map, invariants, repo-specific conventions, extra ask-first items, definition of done. Generic rules stay in the hd-* skills — reference them, don't copy.

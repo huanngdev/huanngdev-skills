@@ -1,6 +1,6 @@
 ---
 name: hd-validate
-description: Zod everywhere: shared schemas from forms to API, parsing untrusted data, mandatory .env validation at startup. Use when writing schemas, DTOs, forms, request validation, env loading or parsing external data.
+description: "Zod everywhere: shared schemas from forms to API, parsing untrusted data, mandatory .env validation at startup. Use when writing schemas, DTOs, forms, request validation, env loading or parsing external data."
 license: MIT
 metadata:
   author: huanngdev

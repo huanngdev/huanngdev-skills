@@ -1,6 +1,6 @@
 ---
 name: hd-backend
-description: Hono + Bun backend rules: route/service/repository layers, shared errors and cursor pagination, OpenAPI spec + Scalar UI, PostgreSQL + Drizzle, MinIO storage, Redis cache. Use when changing API routes, services, DB schema, migrations, seeds, storage or cache.
+description: "Hono + Bun backend rules: route/service/repository layers, shared errors and cursor pagination, OpenAPI spec + Scalar UI, PostgreSQL + Drizzle, S3-compatible storage, Redis cache. Use when changing API routes, services, DB schema, migrations, seeds, storage or cache."
 license: MIT
 metadata:
   author: huanngdev
@@ -23,6 +23,6 @@ Docs: hd-index docs sources (Hono, hono-openapi, Scalar, Drizzle, Bun).
 ## Topics — read only what the task touches
 | File | Read when |
 |---|---|
-| `references/api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar docs, CORS, logging, realtime |
+| `references/api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar docs, CORS, logging, health/shutdown, realtime |
 | `references/data.md` | Schema, queries, migrations, transactions, idempotency, seeds, DB tests |
-| `references/storage.md` | File uploads (MinIO/S3) or caching (Redis) |
+| `references/storage.md` | File uploads (S3-compatible) or caching (Redis) |

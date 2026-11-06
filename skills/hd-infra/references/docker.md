@@ -17,11 +17,14 @@ Never invent or hand-write secret values. Use the generator:
 
 `.env.example` syntax the generator understands:
 ```sh
-POSTGRES_PASSWORD=<generate>        # random 32-byte secret
-POSTGRES_PORT=5432                  # plain default, copied as is
+# random 32-byte secret
+POSTGRES_PASSWORD=<generate>
+# plain default, copied as is
+POSTGRES_PORT=5432
 # apps/api/.env.example — reuse root credentials instead of copying them:
 DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 ```
+Comments go on their own line. The generator rejects a value with a trailing ` # comment` and any `<generate>` left unreplaced.
 It never overwrites existing values, only appends missing keys, prints key names only, and sets mode 600. New secret = add `NAME=<generate>` to the right `.env.example`, rerun. Never print, log or commit generated values. One-off value without the script: `openssl rand -hex 32`.
 
 ## compose.yaml
@@ -37,5 +40,5 @@ It never overwrites existing values, only appends missing keys, prints key names
 - Pin image tags (`postgres:18-alpine`), never `latest`.
 - Every service has a `healthcheck`; dependents use `depends_on: { svc: { condition: service_healthy } }`.
 - Named volumes for data. Publish ports on localhost only: `"127.0.0.1:${POSTGRES_PORT:-5432}:5432"`.
-- Standard services (only those the project needs): `postgres:18-alpine` (needed for `uuidv7()`), `redis:<version>-alpine` with `--requirepass ${REDIS_PASSWORD:?}`, `minio/minio:RELEASE.<date>` with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`.
+- Standard services (only those the project needs): `postgres:18-alpine` (needed for `uuidv7()`), `redis:<version>-alpine` with `--requirepass ${REDIS_PASSWORD:?}`, an S3-compatible store chosen per project (`hd-backend` storage.md; MinIO's official images are gone).
 - Validate before committing: `docker compose config --quiet`.

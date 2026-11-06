@@ -36,6 +36,7 @@ jobs:
       - run: bun run check-types
       - run: bun run test
       - run: bun run build
+      # with packages/db: - run: bun run --filter '@<scope>/db' db:check
 ```
 Check action majors against their releases when creating a new workflow; keep them consistent across the repo.
 

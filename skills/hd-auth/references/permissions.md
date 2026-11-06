@@ -11,7 +11,8 @@ export const rolePermissions = {
 } satisfies Record<z.infer<typeof Role>, z.infer<typeof Permission>[]>;
 ```
 - Permission names are `resource:action`. Add a permission here first, then use it.
-- The user's role is stored on the user record (Better Auth `additionalFields` or the admin plugin's `role`).
+- The user's role is stored on the user record (Better Auth admin plugin's `role`, or `additionalFields`).
+- A role field in `additionalFields` must be `{ type: "string", input: false, defaultValue: "member" }`: fields accept client input by default, so without `input: false` sign-up can self-assign `admin`. Role changes go only through an admin-only service.
 
 ## Enforcement (in services)
 ```ts
@@ -27,3 +28,4 @@ Use the same `rolePermissions` map to hide/disable UI. It is a UX hint only.
 
 ## Tests
 Every protected use case has tests for: allowed role, forbidden role, unauthenticated, and another user's resource.
+Plus one test that sign-up / update-user with `role: "admin"` in the body still yields `member`.

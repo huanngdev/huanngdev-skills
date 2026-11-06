@@ -1,6 +1,6 @@
 ---
 name: hd-core
-description: Cross-cutting rules: workflow and hand-off, git and PRs, project docs and AGENTS.md, TypeScript, testing, security. Use when implementing, fixing, reviewing, committing, or writing tests or docs.
+description: "Cross-cutting engineering rules for TypeScript repos: workflow and hand-off, git and PRs, AGENTS.md and ADRs, TypeScript style, testing, security. Use when implementing, fixing, reviewing or committing code, writing tests, or editing AGENTS.md, ADRs or plans."
 license: MIT
 metadata:
   author: huanngdev
@@ -10,11 +10,10 @@ metadata:
 
 Project rules (AGENTS.md) win on conflict. Global rules: `hd-index`.
 
-Docs: hd-index docs sources (Vite / Vitest, Hono).
+Docs: hd-index docs sources (TypeScript, Vite / Vitest, Testing Library, MSW, Playwright).
 
 ## Always
-- Read the project's `AGENTS.md` first; make the smallest coherent change; run `bun run check` before handing off.
-- Report exactly what was verified and what wasn't.
+- Read the project's `AGENTS.md` first; hand-off check is `bun run check` + `git diff --check` (details in `workflow.md`).
 
 ## Topics — read only what the task touches
 | File | Read when |

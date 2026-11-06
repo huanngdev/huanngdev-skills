@@ -13,29 +13,33 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CLAUDE_CODE_VERSION: 2.1.318 # pinned: bump deliberately after checking `claude plugin validate`
+
 jobs:
   skills:
     name: Skills & manifests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # PR diff + tags
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - uses: oven-sh/setup-bun@v2
 
       - name: JSON manifests are valid
         run: |
           for f in .claude-plugin/*.json; do jq empty "$f" || { echo "::error file=$f::invalid JSON"; exit 1; }; done
 
-      - name: Validate skills (spec, size, English only, links)
+      - name: Validate skills (YAML frontmatter, size, map, links, English only)
         run: scripts/validate.sh
 
+      - name: Validator self-test
+        run: scripts/test-validate.sh
+
       - name: Validate plugin + marketplace (claude plugin validate)
-        run: npx -y @anthropic-ai/claude-code plugin validate .
+        run: bunx "@anthropic-ai/claude-code@$CLAUDE_CODE_VERSION" plugin validate .
 
       - name: Version and changelog are consistent
         run: |
@@ -48,14 +52,25 @@ jobs:
             echo "::error file=.claude-plugin/marketplace.json::keep version only in plugin.json"; exit 1
           fi
 
-      - name: Skill changes need a changelog line (PR only)
-        if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release/')
+      - name: Skill changes add a changelog line (PR only)
+        if: github.event_name == 'pull_request'
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
-          if git diff --name-only "$BASE"...HEAD | grep -qE '^(skills|\.claude-plugin)/'; then
-            unreleased=$(awk '/^## \[Unreleased\]/{f=1;next} /^## \[/{f=0} /^\[/{f=0} f' CHANGELOG.md | sed '/^[[:space:]]*$/d')
-            [ -n "$unreleased" ] || { echo "::error file=CHANGELOG.md::skills/ changed — add a line under [Unreleased]"; exit 1; }
+          changed=$(git diff --name-only "$BASE"...HEAD)
+          if [[ $HEAD_REF == release/v* ]]; then
+            # A release PR may only bump the manifest and move the changelog.
+            extra=$(printf '%s\n' "$changed" | grep -vxE '\.claude-plugin/plugin\.json|CHANGELOG\.md' || true)
+            [ -z "$extra" ] || { echo "::error::release PR touches more than plugin.json + CHANGELOG.md: $extra"; exit 1; }
+            exit 0
+          fi
+          printf '%s\n' "$changed" | grep -qE '^(skills|\.claude-plugin)/' || exit 0
+          unreleased() { awk '/^## \[Unreleased\]/{f=1;next} /^## \[/{f=0} /^\[/{f=0} f' | sed '/^[[:space:]]*$/d'; }
+          git show "$BASE:CHANGELOG.md" | unreleased | sort >/tmp/base.txt
+          unreleased <CHANGELOG.md | sort >/tmp/head.txt
+          if [ -z "$(comm -13 /tmp/base.txt /tmp/head.txt | grep '^- ' || true)" ]; then
+            echo "::error file=CHANGELOG.md::skills/ changed — add a new '- …' line under [Unreleased]"; exit 1
           fi
 
   lint:
@@ -63,12 +78,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: shellcheck
         run: shellcheck scripts/*.sh
 
       - name: actionlint
         run: |
-          bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+          bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
           ./actionlint -color
+
+  macos:
+    name: Scripts on macOS (bash 3.2)
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - run: /bin/bash scripts/validate.sh
+      - run: /bin/bash scripts/test-validate.sh
