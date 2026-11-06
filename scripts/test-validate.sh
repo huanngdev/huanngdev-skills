@@ -75,5 +75,8 @@ expect_fail "planned skill with a non-stub topic" "must be a <!-- TODO --> stub"
 fresh; echo "Template: [AGENTS template](assets/AGENTS.template.md)." >>"$work/r/skills/hd-core/references/docs.md"
 if run; then echo "✓ assets/ markdown link allowed in a topic file"; else echo "✗ assets/ markdown link rejected"; tail -3 "$work/out"; fails=$((fails+1)); fi
 
+fresh; echo "Template: [AGENTS](assets/AGENTS.template.md); also read \`references/testing.md\`." >>"$work/r/skills/hd-core/references/docs.md"
+expect_fail "assets/ link on the same line as a topic chain" "links another topic file"
+
 [ "$fails" -eq 0 ] || { echo "$fails case(s) failed"; exit 1; }
 echo "OK"

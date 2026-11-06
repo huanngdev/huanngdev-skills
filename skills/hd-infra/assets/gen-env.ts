@@ -32,7 +32,7 @@ const fail = (message: string): void => {
 /** Strip one pair of matching quotes; reject unquoted values with an inline comment. */
 const readValue = (raw: string, where: string, report = true): string | null => {
   const value = raw.trim();
-  const quoted = /^(["'])(.*)\1$/.exec(value);
+  const quoted = /^(["'`])(.*)\1$/.exec(value);
   if (quoted) return quoted[2] ?? "";
   if (value.includes("#")) {
     if (report) fail(`${where}: unquoted '#' starts a comment — quote the value or move the comment to its own line`);
@@ -56,7 +56,7 @@ const parse = (text: string, path: string, report = true): Map<string, string> =
 /** Write a value so Bun's dotenv loader reads it back unchanged, or null if it can't. */
 const serialize = (value: string): string | null => {
   if (UNSAFE.test(value) || (value.includes('"') && value.includes("'"))) return null;
-  if (!/^\s|\s$|#|^["']/.test(value)) return value;
+  if (!/^\s|\s$|#|^["'`]/.test(value)) return value; // Bun also quotes with backticks
   return value.includes('"') ? `'${value}'` : `"${value}"`;
 };
 

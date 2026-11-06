@@ -112,7 +112,7 @@ for f in ${skill_files[@]+"${skill_files[@]}"}; do
   for r in skills/"$dir"/references/*.md; do
     rl=$(wc -l <"$r" | tr -d ' ')
     [ "$rl" -le "$MAX_TOPIC_LINES" ] || err "$(basename "$r") $rl lines > $MAX_TOPIC_LINES (split the topic)"
-    if [ "$r" != "$registry" ] && grep -vE '\]\((\.\./)?assets/' "$r" | grep -qE 'references/|\]\([^)]*\.md\)'; then
+    if [ "$r" != "$registry" ] && sed -E 's/\]\((\.\.\/)?assets\/[^)]*\)//g' "$r" | grep -qE 'references/|\]\([^)]*\.md\)'; then
       err "$(basename "$r") links another topic file (one level deep only; assets/ links are fine)"
     fi
     while IFS= read -r ref; do

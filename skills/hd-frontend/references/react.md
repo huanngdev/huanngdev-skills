@@ -1,7 +1,7 @@
 # React app (Vite + React 19)
 
 ## Setup
-- `vite.config.ts`: `react({ compiler: true })` from `@vitejs/plugin-react` — the Rust React Compiler (experimental), which needs `bun add -d oxc-transform-react`. If it fails on the project, fall back to `babel({ presets: [reactCompilerPreset()] })` with `@rolldown/plugin-babel` + `@babel/core` + `babel-plugin-react-compiler` — check the plugin README for the installed version.
+- `vite.config.ts`: `react({ compiler: true })` from `@vitejs/plugin-react` — the Rust React Compiler (experimental), which needs `bun add -d oxc-transform-react`. If it fails on the project, fall back to `babel({ presets: [reactCompilerPreset()] })` with `@rolldown/plugin-babel` + `@babel/core` (+ `@types/babel__core`) + `babel-plugin-react-compiler` — check the plugin README for the installed version.
 - With the compiler on, don't add `useMemo` / `useCallback` / `memo` by hand unless a measured case needs a stable identity.
 - Env through `src/env.ts` (`hd-validate`), imported first in `main.tsx`.
 
