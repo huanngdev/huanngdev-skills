@@ -4,6 +4,8 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-06
+
 ### Added
 - `hd-index`: entry point — global rules (challenge the user, Bun-first, Oxc/Vite toolchain, engineering defaults, tests in `test/` run with `bun --bun vitest run`, language), the skill map, and a single docs-sources registry (docs MCP, official skills, llms.txt per tech) that every skill points to with one standard line.
 - `hd-core`: workflow and hand-off, git/PR conventions, project docs + AGENTS.md template, TypeScript 7 rules, testing (what must be tested, no coverage gate, Playwright + axe), OWASP-based security (open redirects, outbound URLs, CSRF, audit events, `trustedDependencies`, `minimumReleaseAge`).
@@ -15,4 +17,5 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 - `hd-backend`: uploads go to a staging key and are copied to a server-only final key before inspection; idempotency keys handle concurrent duplicates; `PAYLOAD_TOO_LARGE` / `UNSUPPORTED_MEDIA_TYPE` codes; trusted-`Origin` check in the middleware order.
 - `hd-infra`: Turborepo + Bun monorepo (TUI, cache limits, env-aware inputs), internal packages built with tsdown, shared configs in `packages/config`, Docker Compose with generated secrets (`assets/gen-env.ts`: Bun-dotenv-safe quoting, atomic mode-600 writes), GitHub Actions baseline.
 
-[Unreleased]: https://github.com/huanngdev/huanngdev-skills/commits/main
+[Unreleased]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.0.0...HEAD
+[1.0.0]: https://github.com/huanngdev/huanngdev-skills/releases/tag/huanngdev--v1.0.0
