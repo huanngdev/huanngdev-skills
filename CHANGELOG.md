@@ -4,4 +4,15 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 
 ## [Unreleased]
 
+### Added
+- `hd-index`: entry point — global rules (challenge the user, Bun-first, Oxc/Vite toolchain, engineering defaults, tests in `test/` run with `bun --bun vitest run`, language), the skill map, and a single docs-sources registry (docs MCP, official skills, llms.txt per tech) that every skill points to with one standard line.
+- `hd-core`: workflow and hand-off, git/PR conventions, project docs + AGENTS.md template, TypeScript 7 rules, testing (what must be tested, no coverage gate, Playwright + axe), OWASP-based security (open redirects, outbound URLs, CSRF, audit events, `trustedDependencies`, `minimumReleaseAge`).
+- `hd-frontend`: Vite + React 19 with the Rust React Compiler, React Router route object with middleware guards, TanStack Query + axios with schema-parsed responses and query defaults, Zustand/URL state, shadcn preset b0 + Tailwind v4, minimal dense UI, scroll fades on `ScrollArea`, system dark mode, WCAG 2.2 AA.
+- `hd-backend`: Hono + Bun layering (route → service → repository, mappers), shared errors (incl. Hono `HTTPException` and 404 mapping) and cursor pagination, OpenAPI via `hono-openapi` + Scalar UI at `/docs`, health/ready and graceful shutdown, PostgreSQL 18 + Drizzle (Bun.sql, uuidv7, expand/contract migrations, idempotency keys, transaction test boundaries, faker seeds), S3-compatible uploads with a verify-on-complete step, Redis cache.
+- `hd-validate`: Zod everywhere, shared schemas, JSON-safe money, mandatory env validation, forms.
+- `hd-auth`: Better Auth conventions — Hono mounting, uuid IDs, server-owned role field (`input: false`), CSRF/origin checks for our routes, rate limit, session revocation, permissions in services.
+- `hd-ai`: AI SDK + OpenRouter — provider module, structured output, safety, token/step limits, abort on disconnect, per-user quotas, tool authorization, mock-model tests.
+- `hd-backend`: uploads go to a staging key and are copied to a server-only final key before inspection; idempotency keys handle concurrent duplicates; `PAYLOAD_TOO_LARGE` / `UNSUPPORTED_MEDIA_TYPE` codes; trusted-`Origin` check in the middleware order.
+- `hd-infra`: Turborepo + Bun monorepo (TUI, cache limits, env-aware inputs), internal packages built with tsdown, shared configs in `packages/config`, Docker Compose with generated secrets (`assets/gen-env.ts`: Bun-dotenv-safe quoting, atomic mode-600 writes), GitHub Actions baseline.
+
 [Unreleased]: https://github.com/huanngdev/huanngdev-skills/commits/main

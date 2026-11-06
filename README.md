@@ -2,11 +2,22 @@
 
 Skills cá nhân chứa style làm việc của huanngdev, dùng được ở mọi project và mọi agent theo chuẩn [Agent Skills](https://agentskills.io) (Claude Code, Codex, Cursor, OpenCode, Gemini CLI…). Nội dung skill viết bằng tiếng Anh để tiết kiệm token.
 
-> **Trạng thái:** chưa có skill nào, chưa release (version `0.0.0`). Đừng cài plugin cho tới bản `0.1.0`.
+> **Trạng thái:** chưa release (version `0.0.0`). Đừng cài plugin cho tới bản `0.1.0`.
 
-| Skill | Load khi |
-|---|---|
-| _(chưa có)_ | |
+`hd-index` là file index: rules chung cho mọi task + bản đồ "task nào → skill nào → file nào". Ít skill, nhiều file: mỗi nhóm một skill, mỗi chủ đề một file trong `references/` (agent chỉ đọc file cần).
+
+| Skill | Files trong `references/` | Trạng thái |
+|---|---|---|
+| `hd-index` | — (rules chung + bản đồ) | ✅ |
+| `hd-core` | workflow, git, docs, typescript, testing, security (+ `assets/AGENTS.template.md`) | ✅ |
+| `hd-frontend` | react, state, ui, a11y | ✅ |
+| `hd-backend` | api, data, storage | ✅ |
+| `hd-validate` | schemas, env, forms | ✅ |
+| `hd-auth` | setup, permissions | ✅ |
+| `hd-ai` | — (một file) | ✅ |
+| `hd-infra` | monorepo, packages, docker, ci (+ `assets/gen-env.ts`) | ✅ |
+
+Không có skill cho dịch vụ bên thứ ba (Vercel, Cloudflare, Neon…) — dùng skill official của vendor. Ngoại lệ: Zod, Better Auth, AI SDK có skill riêng nhưng chỉ ghi quy ước của mình + MCP docs.
 
 ## Cài đặt
 
@@ -25,13 +36,13 @@ Cần push repo lên GitHub trước. Trong Claude Code:
 /plugin marketplace add huanngdev/huanngdev-skills
 /plugin install huanngdev@huanngdev-skills
 ```
-Skill sẽ có tên `huanngdev:hd-workflow`… Cập nhật: `/plugin marketplace update huanngdev-skills`.
+Skill sẽ có tên `huanngdev:hd-index`, `huanngdev:hd-core`… Cập nhật: `/plugin marketplace update huanngdev-skills`.
 Thử từ local trước khi push: `/plugin marketplace add /đường/dẫn/tới/huanngdev-skills`.
 
 ### Cách C — Mọi agent qua skills.sh CLI
 ```sh
 npx skills add huanngdev/huanngdev-skills -g --all              # global, mọi agent
-npx skills add huanngdev/huanngdev-skills -s hd-react-ui        # một skill, chỉ project hiện tại
+npx skills add huanngdev/huanngdev-skills -s hd-frontend        # một skill, chỉ project hiện tại
 npx skills add huanngdev/huanngdev-skills@<sha> -g --all        # pin commit
 npx skills add . -g --all                                       # từ repo local, trước khi push
 npx skills update -g                                            # cập nhật
@@ -49,16 +60,16 @@ Trong Claude Code gõ `/skills` (hoặc hỏi "what skills do you have?") → ph
 ## Dùng trong project
 Trong AGENTS.md của project, chỉ ghi phần riêng và trỏ tới skills:
 ```md
-- Shared style: `hd-workflow`, `hd-typescript`, `hd-react-ui`, `hd-backend-api`. This file wins on conflict.
+- Shared style: hd-* skills (start with `hd-index`). This file wins on conflict.
 ```
-Hoặc bảo agent: "dùng hd-agents-md để rút gọn AGENTS.md này".
+Hoặc bảo agent: "dùng hd-core (docs.md + `assets/AGENTS.template.md`) để rút gọn AGENTS.md này".
 
 ## Thêm / sửa skill
 Rules đầy đủ ở [AGENTS.md](AGENTS.md) (agent tự đọc khi làm việc trong repo này). Tóm tắt:
 1. Copy `templates/SKILL.template.md` → `skills/hd-<topic>/SKILL.md`, viết tiếng Anh
 2. Description ngắn, có `Use when …`; body ≤ 150 dòng; chi tiết dài để trong `references/`
 3. Ghi một dòng dưới `## [Unreleased]` trong `CHANGELOG.md`
-4. `scripts/validate.sh` và `claude plugin validate .` phải pass → commit (chưa bump version)
+4. `scripts/validate.sh` và `claude plugin validate .` phải pass (cần `bun`; sửa validator thì chạy thêm `scripts/test-validate.sh`) → commit (chưa bump version)
 
 ## Release (deploy)
 Kênh deploy chính là **Claude Code plugin**: push lên `main` = phát hành. Version chỉ nằm ở `.claude-plugin/plugin.json`.
@@ -79,4 +90,4 @@ git switch main && git pull
 scripts/release.sh tag               # tag huanngdev--vX.Y.Z + push → tự tạo GitHub Release
 ``` Máy đã bật auto-update nhận bản mới ở lần mở Claude Code tiếp theo; nếu không thì chạy `claude plugin marketplace update huanngdev-skills && claude plugin update huanngdev@huanngdev-skills`.
 
-CI (`.github/workflows/ci.yml`) chạy mỗi PR/push: validate skills, validate manifest, kiểm version ↔ changelog.
+CI (`.github/workflows/ci.yml`) chạy mỗi PR/push: validate skills (YAML thật, map, link, độ dài), self-test validator, `claude plugin validate` (version pin), version ↔ changelog, PR sửa skill phải thêm dòng changelog mới; shellcheck + actionlint; chạy lại validator trên macOS (bash 3.2).
