@@ -58,7 +58,7 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 | | `state.md` | API client, queries, mutations, API errors, client/URL state |
 | | `ui.md` | Layout, density, shadcn, scroll areas, theming, icons, motion |
 | | `a11y.md` | Keyboard, focus, semantics, reduced motion |
-| `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination |
+| `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar |
 | | `data.md` | Schema, queries, migrations, transactions, seeds |
 | | `storage.md` | File uploads (MinIO/S3), caching (Redis) |
 | `hd-validate` | `schemas.md` | Zod schemas, DTOs, shared contracts, parsing |

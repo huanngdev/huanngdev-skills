@@ -9,6 +9,8 @@ Goal: research docs fast, accurately and for the **installed** version. Order: d
 | Better Auth | `better-auth` | `better-auth/skills -s better-auth-best-practices better-auth-security-best-practices` | `https://better-auth.com/llms.txt` |
 | Turborepo | — | `vercel/turborepo -s turborepo` | `https://turborepo.dev/llms.txt` |
 | Hono | — | `honojs/skills -s hono` | `https://hono.dev/llms.txt` |
+| hono-openapi | — | — | `https://github.com/rhinobase/hono-openapi` (README) |
+| Scalar | — | — | `https://guides.scalar.com/llms.txt` |
 | AI SDK | — | `vercel/ai -s ai-sdk` | `node_modules/ai/docs/`, `https://ai-sdk.dev/llms.txt` |
 | OpenRouter | — | — | `https://openrouter.ai/docs/llms.txt` |
 | Drizzle | — | — | `https://orm.drizzle.team/llms.txt` |

@@ -17,6 +17,7 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 - `hd-frontend`: Vite + React 19 with Rust React Compiler, React Router route object + loader guards, TanStack Query + axios with schema-parsed responses, Zustand/URL state, shadcn preset b0, minimal dense UI rules, ScrollArea fade, system dark mode, WCAG 2.2 AA.
 - `hd-backend`: frontend calls the API with axios + shared schemas (no `hc`).
 - `hd-core`: workflow and hand-off, git/PR conventions, project docs + AGENTS.md template, TypeScript 7 rules, testing (what must be tested, no coverage gate), OWASP-based security defaults.
+- `hd-backend`: OpenAPI spec generated from Zod via `hono-openapi`, Scalar UI at `/docs` (non-production); `validate()` now built on `hono-openapi` validator, same shared error shape.
 
 ### Changed
 - Shorter skill descriptions to cut always-loaded tokens.

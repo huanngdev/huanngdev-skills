@@ -30,17 +30,26 @@ export const ErrorResponseSchema = z.object({
 ```
 - API: one `AppError(code, status, message, details?)` class; services throw it; `app.onError` maps `AppError` → its status + shape, anything else → 500 `INTERNAL` (log the real error with the request id, never return it).
 - Status per code: 400, 401, 403, 404, 409, 429, 500 in the order above.
-- Validation helper (all input goes through it):
+- Validation helper (all input goes through it; it also feeds the OpenAPI spec):
 ```ts
 import type { ValidationTargets } from "hono";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { validator } from "hono-openapi";
 
-export const validate = <T extends z.ZodType, Target extends keyof ValidationTargets>(target: Target, schema: T) =>
-  zValidator(target, schema, (result, c) => {
+const toFieldErrors = (issues: readonly StandardSchemaV1.Issue[]): Record<string, string[]> => {
+  const out: Record<string, string[]> = {};
+  for (const issue of issues) {
+    const key = (issue.path ?? []).map((p) => String(typeof p === "object" ? p.key : p)).join(".") || "_root";
+    (out[key] ??= []).push(issue.message);
+  }
+  return out;
+};
+
+export const validate = <T extends StandardSchemaV1, Target extends keyof ValidationTargets>(target: Target, schema: T) =>
+  validator(target, schema, (result, c) => {
     if (!result.success) {
       return c.json(
-        { error: { code: "VALIDATION_FAILED", message: "Invalid input", details: z.flattenError(result.error).fieldErrors } },
+        { error: { code: "VALIDATION_FAILED", message: "Invalid input", details: toFieldErrors(result.error) } },
         400,
       );
     }
@@ -53,6 +62,17 @@ export const validate = <T extends z.ZodType, Target extends keyof ValidationTar
 - Lists return `{ items: T[], nextCursor: string | null }`, built from `pageSchema(itemSchema)` in `packages/shared`.
 - Query `?cursor=&limit=` (`limit` default 20, max 100). Cursor = opaque base64url of the last row's `(created_at, id)`; order by `created_at desc, id desc`; fetch `limit + 1` to know if there is a next page. Index those columns.
 - No API versioning.
+
+## OpenAPI + Scalar (view and try the API)
+- Spec is generated from the same Zod schemas with `hono-openapi`; UI is Scalar (`@scalar/hono-api-reference`). No hand-written spec, no Swagger UI.
+- Every route: `describeRoute({ tags, summary, responses })` + `validate(...)`. Responses use `resolver(Schema)`; document the success DTO and `ErrorResponseSchema` for error statuses.
+- Shared schemas get `.meta({ ref: "UserDto" })` so they appear once under `components`.
+- Mount after all routes:
+```ts
+app.get("/openapi.json", openAPIRouteHandler(app, { documentation: { info: { title: "API", version: "1.0.0" } } }));
+app.get("/docs", Scalar({ url: "/openapi.json" }));
+```
+- Only when `env.NODE_ENV !== "production"` unless the project decides to publish its docs.
 
 ## Middleware order
 request id → logger → CORS → session (`hd-auth`) → routes → `onError`.
