@@ -4,6 +4,8 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-08
+
 ### Changed
 - `hd-frontend`: strict UI/logic split — components only render (reusable UI with props/events, route containers wire hooks in); all state, effects, handlers and data access live in hooks, pure functions in `lib/`; no formatting or data shaping inside components.
 
@@ -45,7 +47,8 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 - `hd-backend`: uploads go to a staging key and are copied to a server-only final key before inspection; idempotency keys handle concurrent duplicates; `PAYLOAD_TOO_LARGE` / `UNSUPPORTED_MEDIA_TYPE` codes; trusted-`Origin` check in the middleware order.
 - `hd-infra`: Turborepo + Bun monorepo (TUI, cache limits, env-aware inputs), internal packages built with tsdown, shared configs in `packages/config`, Docker Compose with generated secrets (`assets/gen-env.ts`: Bun-dotenv-safe quoting, atomic mode-600 writes), GitHub Actions baseline.
 
-[Unreleased]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.2.0...HEAD
+[Unreleased]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.3.0...HEAD
+[1.3.0]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.2.0...huanngdev--v1.3.0
 [1.2.0]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.1.0...huanngdev--v1.2.0
 [1.1.0]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.0.0...huanngdev--v1.1.0
 [1.0.0]: https://github.com/huanngdev/huanngdev-skills/releases/tag/huanngdev--v1.0.0
