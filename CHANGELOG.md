@@ -4,6 +4,8 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-08
+
 ### Added
 - `hd-core`: `design.md` — design every feature before building (requirements with real numbers, data model, contract, failure modes, ≥ 2 options with a trade-off table), agree it with the user, then record it (ADR, `docs/architecture.md`, `GLOSSARY.md`) so later features reuse it. AGENTS template reads those first.
 - `hd-index`: community skills approved by the owner, installed in every project: Taste Skill (`design-taste-frontend`) and system-design skills (`grilling`, `domain-modeling`, `codebase-design`).
@@ -40,6 +42,7 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 - `hd-backend`: uploads go to a staging key and are copied to a server-only final key before inspection; idempotency keys handle concurrent duplicates; `PAYLOAD_TOO_LARGE` / `UNSUPPORTED_MEDIA_TYPE` codes; trusted-`Origin` check in the middleware order.
 - `hd-infra`: Turborepo + Bun monorepo (TUI, cache limits, env-aware inputs), internal packages built with tsdown, shared configs in `packages/config`, Docker Compose with generated secrets (`assets/gen-env.ts`: Bun-dotenv-safe quoting, atomic mode-600 writes), GitHub Actions baseline.
 
-[Unreleased]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.1.0...HEAD
+[Unreleased]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.2.0...HEAD
+[1.2.0]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.1.0...huanngdev--v1.2.0
 [1.1.0]: https://github.com/huanngdev/huanngdev-skills/compare/huanngdev--v1.0.0...huanngdev--v1.1.0
 [1.0.0]: https://github.com/huanngdev/huanngdev-skills/releases/tag/huanngdev--v1.0.0
