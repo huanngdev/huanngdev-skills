@@ -125,6 +125,28 @@ for f in ${skill_files[@]+"${skill_files[@]}"}; do
   echo "  desc=${#desc}ch  body=${body_lines}L  ~$((words*13/10)) tokens when loaded"
 done
 
+# ---------- structured assets parse (JSON / TOML / YAML) ----------
+asset_files=()
+while IFS= read -r a; do asset_files+=("$a"); done < <(find skills -path '*/assets/*' -type f \( -name '*.json' -o -name '*.toml' -o -name '*.yml' -o -name '*.yaml' \) | sort)
+if [ ${#asset_files[@]} -gt 0 ]; then
+  echo "• assets (${#asset_files[@]} structured files)"
+  # shellcheck disable=SC2016  # JS source, not shell
+  bad_assets=$(bun -e '
+    let bad = 0;
+    for (const f of process.argv.slice(1)) {
+      const text = await Bun.file(f).text();
+      try {
+        if (f.endsWith(".json")) JSON.parse(text);
+        else if (f.endsWith(".toml")) Bun.TOML.parse(text);
+        else Bun.YAML.parse(text);
+      } catch (e) { console.log(`${f}: ${String(e.message ?? e).split("\n")[0]}`); bad++; }
+    }
+  ' "${asset_files[@]}")
+  if [ -n "$bad_assets" ]; then
+    while IFS= read -r line; do err "asset does not parse: $line"; done <<<"$bad_assets"
+  fi
+fi
+
 # ---------- docs sources live only in hd-index (AGENTS.md §5) ----------
 if leaks=$(grep -rnE 'mcpServers|"type": *"http"|skills add ' skills --include='*.md' | grep -vF "$registry:"); then
   echo "• docs sources"; echo "$leaks" | head -5 | sed 's/^/  /'; err "MCP config / skill install commands belong only in $registry"

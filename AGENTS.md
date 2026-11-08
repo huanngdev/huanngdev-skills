@@ -14,6 +14,8 @@ skills/hd-<domain>/scripts/      # optional executables (run, not read)
 templates/SKILL.template.md      # starting point for new skills
 scripts/validate.sh              # must pass before commit (needs bun for YAML parsing)
 scripts/test-validate.sh         # self-test: injects defects, expects validate.sh to fail
+scripts/test-presets.sh          # hd-infra config presets must work (tsc/oxlint/oxfmt) in a temp consumer repo
+scripts/tests/                   # bun test suites for skill assets (gen-env.ts)
 scripts/sync-map.ts              # regenerates the hd-index skill map from every SKILL.md topic table
 scripts/release.sh               # the only way to bump version + tag (§8)
 scripts/link.sh                  # local symlinks (don't combine with the plugin install)
@@ -67,7 +69,7 @@ Root `CLAUDE.md` (`@AGENTS.md`) is for agents working on this repo; plugins don'
 1. New topic: add `skills/hd-<domain>/references/<topic>.md` and a row in that `SKILL.md` topic table, then run `bun scripts/sync-map.ts` (never edit the hd-index map by hand; `validate.sh` fails when it is out of date). New domain skill (rare): copy `templates/SKILL.template.md`, then also update `README.md`.
 2. Edit; keep wording terse.
 3. Add one line under `## [Unreleased]` in `CHANGELOG.md` (`### Added|Changed|Removed|Fixed`, prefixed with the skill name).
-4. Run `scripts/validate.sh` and `claude plugin validate .` — both must pass. Changed `validate.sh`? Also run `scripts/test-validate.sh` and add a case for each new check.
+4. Run `scripts/validate.sh` and `claude plugin validate .` — both must pass. Changed `validate.sh`? Also run `scripts/test-validate.sh` and add a case for each new check. Changed an asset in `skills/hd-infra/assets/`? Run `bun test scripts/tests` and `scripts/test-presets.sh`.
 5. Conventional Commit, e.g. `feat(hd-frontend): require reduced-motion check`. Do **not** bump the version here — that happens only in a release (§8).
 
 ## 7. Versioning
@@ -97,13 +99,13 @@ Step 1 refuses unless: arguments are exactly as above, on `main`, clean, in sync
 
 ## 9. CI
 `.github/workflows/ci.yml` on every PR and push to `main` (also runnable manually):
-- **Skills & manifests** (required): JSON manifests valid, `validate.sh`, `test-validate.sh`, `claude plugin validate` (Claude Code version pinned in the workflow `env`, bumped deliberately), version/changelog consistency, and on PRs "skills changed ⇒ a **new** `[Unreleased]` line vs the base branch". `release/v*` PRs may touch only `plugin.json` (version only, increasing, matching the branch) + `CHANGELOG.md` (with that version's section).
+- **Skills & manifests** (required): JSON manifests valid, `validate.sh` (incl. structured assets parse), `test-validate.sh`, `bun test scripts/tests`, `test-presets.sh`, `claude plugin validate` (Claude Code version pinned in the workflow `env`, bumped deliberately), version/changelog consistency, and on PRs "skills changed ⇒ a **new** `[Unreleased]` line vs the base branch". `release/v*` PRs may touch only `plugin.json` (version only, increasing, matching the branch) + `CHANGELOG.md` (with that version's section).
 - **Scripts & workflows** (required): `shellcheck scripts/*.sh`, `actionlint` on workflows.
 - **Scripts on macOS (bash 3.2)**: runs the validators with `/bin/bash` on macOS (portability).
 
 Job names are the required status checks on `main`; renaming one means updating branch protection.
 
-Run the same locally before pushing: `scripts/validate.sh && scripts/test-validate.sh && claude plugin validate . && shellcheck scripts/*.sh && actionlint`. Never weaken these checks to get green.
+Run the same locally before pushing: `scripts/validate.sh && scripts/test-validate.sh && bun test scripts/tests && scripts/test-presets.sh && claude plugin validate . && shellcheck scripts/*.sh && actionlint`. Never weaken these checks to get green.
 
 ## 10. Review checklist
 - [ ] English only under `skills/`
