@@ -14,7 +14,7 @@
 - Theme tokens only (`bg-background`, `text-muted-foreground`, …). No raw colors, arbitrary values (`w-[317px]`) or inline styles.
 
 ## Components come only from shadcn and its ecosystem
-- Every UI element is a shadcn/ui component (`components/ui/*`) or composed from them in a feature component. Find one in this order: installed `components/ui` → shadcn docs (MCP `shadcn`, `shadcn docs <name>`) → shadcn blocks/charts → registries in the shadcn Registry Directory (`bunx --bun shadcn@latest search <query>`, `add @<registry>/<item>`).
+- Every UI element is a shadcn/ui component (`components/ui/*`) or composed from them in a feature component. Find one in this order: installed `components/ui` → shadcn docs (MCP `shadcn`, `shadcn docs <name>`) → shadcn blocks/charts → registries in the shadcn Registry Directory (`bunx --bun shadcn@latest search @<registry> -q "<query>"` per likely namespace — without a registry it searches only those in `components.json`; then `add @<registry>/<item>`).
 - Community registry items: read the code before keeping it; one that adds npm dependencies follows the ask-first rule (`hd-core` workflow.md).
 - Nothing fits → stop and ask the user, naming what you searched. Never hand-roll a small component that duplicates a shadcn one (button, badge, spinner, kbd, tooltip, dialog, empty state, field, …).
 - Need a variant → compose with `className` and theme tokens in the feature component; never fork or edit `components/ui`.

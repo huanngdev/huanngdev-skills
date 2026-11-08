@@ -32,7 +32,7 @@ Goal: research docs fast, accurately and for the **installed** version. Order: d
 | MSW | — | — | `https://mswjs.io/docs` (no llms.txt) |
 | Playwright | `playwright` | — | `https://playwright.dev/docs/intro` (no llms.txt) |
 | Taste Skill (UI design, community) | — | `Leonxlnx/taste-skill -s design-taste-frontend` | `https://www.tasteskill.dev/llms.txt` |
-| System design (community) | — | `mattpocock/skills -s grilling domain-modeling codebase-design`; `addyosmani/agent-skills -s api-and-interface-design` | — |
+| System design (community) | — | `mattpocock/skills -s grilling domain-modeling codebase-design` | — |
 
 ## MCP entries (merge into the project's `.mcp.json`; add only what the project uses)
 ```json

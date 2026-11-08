@@ -6,7 +6,7 @@
 Shared style: hd-* skills (start with `hd-index`). This file wins on conflict.
 
 ## 2. Read first
-1. `docs/architecture.md` — agreed patterns; `GLOSSARY.md` — domain terms
+1. `docs/architecture.md` — agreed patterns; `GLOSSARY.md` — domain terms (once the first accepted design creates them)
 2. `docs/MILESTONES.md` — current scope (if the project keeps it)
 3. <key spec>
 

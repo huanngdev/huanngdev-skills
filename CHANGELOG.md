@@ -6,7 +6,7 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 
 ### Added
 - `hd-core`: `design.md` — design every feature before building (requirements with real numbers, data model, contract, failure modes, ≥ 2 options with a trade-off table), agree it with the user, then record it (ADR, `docs/architecture.md`, `GLOSSARY.md`) so later features reuse it. AGENTS template reads those first.
-- `hd-index`: community skills approved by the owner, installed in every project: Taste Skill (`design-taste-frontend`) and system-design skills (`grilling`, `domain-modeling`, `codebase-design`, `api-and-interface-design`).
+- `hd-index`: community skills approved by the owner, installed in every project: Taste Skill (`design-taste-frontend`) and system-design skills (`grilling`, `domain-modeling`, `codebase-design`).
 
 ### Changed
 - `hd-frontend`: every UI element comes from shadcn/ui or its registry ecosystem; nothing fits → ask the user, never hand-roll duplicates. `shadcn add --all` right after init. Landing/marketing pages also use the Taste Skill; app screens stay minimal and dense.
