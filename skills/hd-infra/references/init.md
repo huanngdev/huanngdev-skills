@@ -23,7 +23,10 @@ Not in the profile = not scaffolded. Add it later when a task needs it.
 ## Versions & ports
 - npm packages: `bun add <pkg>` without a version, after `bunfig.toml` is in place, so Bun picks the newest version past the release-age gate; `bun.lock` pins it. `packageManager` = `bun@$(bun --version)`.
 - Images and ports: `docker.md` (standard defaults; images pinned to the newest stable tag on Docker Hub at init).
-- Busy host port → first free port above the default, written to the root `.env` before `env:gen`. Ports live only in the root `.env.example` (`API_PORT=3000`, `WEB_PORT=5173`, service ports); app and db `.env.example` files build URLs from them with `${…}` (`DATABASE_URL`, `BETTER_AUTH_URL`, `CORS_ORIGINS`, `VITE_API_URL`), and `vite.config.ts` reads `WEB_PORT`.
+- Busy host port → first free port above the default, written to the root `.env` before `env:gen`. Ports live only in the root `.env.example` (`API_PORT=3000`, `WEB_PORT=5173`, service ports); other `.env.example` files map them with `${…}`:
+  - `apps/api`: `PORT=${API_PORT}`, `BETTER_AUTH_URL=http://localhost:${API_PORT}`, `CORS_ORIGINS=http://localhost:${WEB_PORT}`
+  - `apps/web`: `WEB_PORT=${WEB_PORT}`, `VITE_API_URL=http://localhost:${API_PORT}`; `vite.config.ts` uses `loadEnv(mode, process.cwd(), "")` → `server: { port: Number(env.WEB_PORT), strictPort: true }` (the browser schema stays `VITE_*` only)
+  - `packages/db`: `DATABASE_URL` from the `POSTGRES_*` keys
 
 ## Steps (in order)
 1. `git init -b main`. Copy from this skill:
@@ -33,11 +36,14 @@ Not in the profile = not scaffolded. Add it later when a task needs it.
    - `assets/init/dependabot.yml` → `.github/dependabot.yml`
    - `assets/gen-env.ts` → `scripts/gen-env.ts`
 2. Root `package.json`, `turbo.json` and root scripts exactly as in `monorepo.md` (incl. `env:gen`); `bun install`.
-3. `packages/config` presets (`packages.md`).
+3. `packages/config`: copy `assets/config/` (`packages.md`).
 4. `packages/shared`: `errors.ts`, `page.ts`, `permissions.ts` (`hd-backend` api.md, `hd-validate` schemas.md, `hd-auth` permissions.md).
 5. `packages/db` (`hd-backend` data.md): client, standard columns, empty `seed.ts`, `drizzle.config.ts`, `.env.example` with `DATABASE_URL`. Scripts run on Bun so its `.env` loads: `"db:generate": "bun --bun drizzle-kit generate"`, same for `db:migrate`, `db:check`; `"db:seed": "bun src/seed.ts"`.
 6. Compose + env: `compose.yaml`, root `.env.example`, each app's `.env.example` (`docker.md`); `bun run env:gen`; `docker compose up -d --wait`.
-7. `packages/auth` (`hd-auth` setup.md): email + password; role as `additionalFields` with `input: false` (no admin plugin). Then `bunx auth@latest generate --config packages/auth/src/server.ts --output packages/db/src/schema/auth.ts --yes`, `bun run --filter '@<name>/db' db:generate`, review the SQL, `db:migrate`.
+7. `packages/auth` (`hd-auth` setup.md): email + password; role as `additionalFields` with `input: false` (no admin plugin). `auth` is built by a factory taking `{ db, secret, baseURL, trustedOrigins }`; `server.ts` exports it plus an instance built from Zod-parsed `Bun.env`. Then:
+   - `bunx turbo run build --filter=@<name>/auth...` (builds `shared` and `db` first)
+   - from `apps/api` (so Bun loads its `.env`): `bunx --bun auth@latest generate --config ../../packages/auth/src/server.ts --output ../../packages/db/src/schema/auth.ts --yes`
+   - `bun run --filter '@<name>/db' db:generate`, review the SQL, `db:migrate`.
 8. `apps/api` (`hd-backend` api.md): `env.ts`, `app.ts` with the full middleware order, `/health`, `/ready`, `/openapi.json`, `/docs`, graceful shutdown.
 9. `apps/web`: `bunx --bun shadcn@latest init --preset b0 --template vite --pointer --no-monorepo -c apps -n web`, then the `hd-frontend` structure: `env.ts`, `lib/api.ts`, providers, route object with sign-in, sign-up and a guarded home route inside an app layout using the `ScrollArea` wrapper.
 10. `.github/workflows/ci.yml` from `ci.md` (+ the `db:check` step).

@@ -2,18 +2,40 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "extraKnownMarketplaces": {
     "huanngdev-skills": {
-      "source": { "source": "github", "repo": "huanngdev/huanngdev-skills" }
+      "source": {
+        "source": "github",
+        "repo": "huanngdev/huanngdev-skills"
+      }
     }
   },
   "enabledPlugins": {
     "huanngdev@huanngdev-skills": true
   },
-  "enabledMcpjsonServers": ["zod-docs", "better-auth", "tanstack", "shadcn", "playwright"],
+  "enabledMcpjsonServers": [
+    "zod-docs",
+    "better-auth",
+    "tanstack",
+    "shadcn",
+    "playwright"
+  ],
   "permissions": {
     "allow": [
       "Bash(bun install)",
       "Bash(bun install --frozen-lockfile)",
-      "Bash(bun run *)",
+      "Bash(bun run check)",
+      "Bash(bun run lint)",
+      "Bash(bun run check-types)",
+      "Bash(bun run test)",
+      "Bash(bun run test:integration)",
+      "Bash(bun run build)",
+      "Bash(bun run format)",
+      "Bash(bun run format:check)",
+      "Bash(bun run env:gen)",
+      "Bash(bun run dev)",
+      "Bash(bun run --filter * db:generate)",
+      "Bash(bun run --filter * db:migrate)",
+      "Bash(bun run --filter * db:check)",
+      "Bash(bun run --filter * db:seed)",
       "Bash(bun --bun vitest run *)",
       "Bash(bunx turbo run *)",
       "Bash(bunx --bun shadcn@latest add *)",
@@ -30,6 +52,7 @@
     ],
     "deny": [
       "Bash(git push *--force*)",
+      "Bash(git push -f*)",
       "Bash(git push * -f*)",
       "Bash(docker compose down *-v*)",
       "Read(./**/.env)",

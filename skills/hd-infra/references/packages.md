@@ -37,6 +37,7 @@ packages/config/
   oxfmt.json
   vitest/base.ts
 ```
+- Exact presets: copy `assets/config/` from this skill to `packages/config/` and set its package name to `@<scope>/config`. Change presets there, never in an app.
 - tsconfig: app `tsconfig.json` = `"extends": "@<scope>/config/tsconfig/<preset>.json"` + includes only.
 - oxlint: `extends` takes **relative file paths** (not package names). App `.oxlintrc.json` = `{ "extends": ["../../packages/config/oxlint/react.json"] }`. Script `"lint": "oxlint --type-aware --deny-warnings"` (type-aware options go on the CLI, not in nested configs).
 - oxfmt: one config for the whole repo, run from the root with `-c packages/config/oxfmt.json`. No `.oxfmtrc.*` in apps.
