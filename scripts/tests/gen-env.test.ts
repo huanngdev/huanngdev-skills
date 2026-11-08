@@ -91,3 +91,13 @@ test("skips directories without .env.example", async () => {
   expect(r.code).toBe(0);
   expect(await Bun.file(join(dir, "apps/empty/.env")).exists()).toBe(false);
 });
+
+test("values round-trip through Bun's own dotenv loader", async () => {
+  await put(".env.example", "HASH='a#b'\nSPACE=\" padded \"\nDQ='say \"hi\"'\nSQ=\"it's\"\nPLAIN=v1\n");
+  expect(run(".").code).toBe(0);
+  const p = Bun.spawnSync(
+    ["bun", "--env-file=.env", "-e", "console.log(JSON.stringify([Bun.env.HASH, Bun.env.SPACE, Bun.env.DQ, Bun.env.SQ, Bun.env.PLAIN]))"],
+    { cwd: dir, env: { PATH: process.env.PATH ?? "" } },
+  );
+  expect(JSON.parse(p.stdout.toString())).toEqual(["a#b", " padded ", 'say "hi"', "it's", "v1"]);
+});

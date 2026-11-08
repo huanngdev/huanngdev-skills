@@ -5,7 +5,7 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 ## [Unreleased]
 
 ### Changed
-- `hd-infra`: assets are now tested in CI — structured files must parse, `gen-env.ts` has regression tests, and the `assets/config` presets are exercised in a temp consumer repo (`tsc` 7, oxlint, oxfmt, vitest). No rule changes.
+- Repository validation and documentation: parse structured skill assets, add `gen-env.ts` and `hd-infra` config-consumer regression checks, refresh release/init instructions in the README. Shipped skill content and rules unchanged.
 
 ## [1.1.0] - 2026-11-08
 

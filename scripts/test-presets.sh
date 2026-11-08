@@ -37,25 +37,27 @@ TS
 cat > apps/web/src/app.tsx <<'TS'
 export const Logo = (): React.JSX.Element => <img src="/logo.svg" alt="Logo" />;
 TS
-check() { # name, dir, expect(pass|fail)
-  local res=pass
-  (cd "$2" && bunx tsc --noEmit -p . >/dev/null 2>&1 && bunx oxlint --type-aware --deny-warnings >/dev/null 2>&1) || res=fail
-  if [ "$res" = "$3" ]; then ok "$1"; else bad "$1 (expected $3, got $res)"; fi
+check() { # name, dir, expect(pass|fail), [diagnostic that must appear when failing]
+  local res=pass log="$work/check.log"
+  (cd "$2" && bunx tsc --noEmit -p . && bunx oxlint --type-aware --deny-warnings) >"$log" 2>&1 || res=fail
+  if [ "$res" != "$3" ]; then bad "$1 (expected $3, got $res)"; sed 's/^/    /' "$log" | tail -20; return; fi
+  if [ -n "${4:-}" ] && ! grep -qF "$4" "$log"; then bad "$1 (failed, but without '$4')"; sed 's/^/    /' "$log" | tail -20; return; fi
+  ok "$1"
 }
 check "package preset accepts valid code" packages/lib pass
 check "react preset accepts valid code" apps/web pass
-if bunx oxfmt --check -c packages/config/oxfmt.json packages/lib/src apps/web/src >/dev/null 2>&1; then ok "oxfmt config loads"; else bad "oxfmt config loads"; fi
+if bunx oxfmt --check -c packages/config/oxfmt.json packages/lib/src apps/web/src >"$work/fmt.log" 2>&1 || { sed "s/^/    /" "$work/fmt.log"; false; }; then ok "oxfmt config loads"; else bad "oxfmt config loads"; fi
 if bun -e 'const m = await import("./packages/config/vitest/base.ts"); if (!m.base?.test) process.exit(1)'; then ok "vitest base exports base"; else bad "vitest base exports base"; fi
 
 # bad fixtures: each must be rejected
-expect_reject() { # name, dir, file, content
-  local f="$2/src/$3"; printf '%s\n' "$4" > "$f"; check "$1" "$2" fail; rm "$f"
+expect_reject() { # name, dir, file, content, diagnostic
+  local f="$2/src/$3"; printf '%s\n' "$4" > "$f"; check "$1" "$2" fail "$5"; rm "$f"
 }
-expect_reject "missing return type (isolatedDeclarations)" packages/lib bad.ts 'export const f = (a: number) => a;'
-expect_reject "explicit any" packages/lib bad.ts 'export const x: any = 1;'
-expect_reject "default export" packages/lib bad.ts 'const y = 1; export default y;'
-expect_reject "non-null assertion" packages/lib bad.ts 'export const z = (a?: string): string => a!;'
-expect_reject "img without alt" apps/web bad.tsx 'export const I = (): React.JSX.Element => <img src="/a.png" />;'
+expect_reject "missing return type (isolatedDeclarations)" packages/lib bad.ts 'export const f = (a: number) => a;' TS9007
+expect_reject "explicit any" packages/lib bad.ts 'export const x: any = 1;' no-explicit-any
+expect_reject "default export" packages/lib bad.ts 'const y = 1; export default y;' no-default-export
+expect_reject "non-null assertion" packages/lib bad.ts 'export const z = (a?: string): string => a!;' no-non-null-assertion
+expect_reject "img without alt" apps/web bad.tsx 'export const I = (): React.JSX.Element => <img src="/a.png" />;' alt-text
 
 if [ "$fails" -ne 0 ]; then echo "$fails failure(s)"; exit 1; fi
 echo OK
