@@ -15,7 +15,7 @@ Docs: hd-index docs sources (React, React Router, Vite / Vitest, TanStack, axios
 ## Always
 - Vite (latest) + React 19 SPA with React Compiler on. Next.js only if the project already chose it.
 - Every UI element comes from shadcn/ui or its registry ecosystem; nothing fits → ask the user, never hand-roll a duplicate (`ui.md`).
-- Components are presentational; state, effects and data access live in hooks.
+- UI and logic never mix: components only render (reusable, props in / events out); every state, effect, handler and data access lives in a hook; pure functions in `lib/` (`react.md`).
 - App REST data only through TanStack Query + the shared axios instance; responses parsed with shared Zod schemas. SDK-owned transports (Better Auth client, AI SDK streams) are the only exceptions.
 - UI is minimal and dense: no card inside card, few borders, tight spacing. Every scrollable region is a shadcn `ScrollArea` with a scroll fade (`ui.md`).
 - Every screen handles loading, empty, error and success.

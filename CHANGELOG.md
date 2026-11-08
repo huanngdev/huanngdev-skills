@@ -4,6 +4,9 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 
 ## [Unreleased]
 
+### Changed
+- `hd-frontend`: strict UI/logic split — components only render (reusable UI with props/events, route containers wire hooks in); all state, effects, handlers and data access live in hooks, pure functions in `lib/`; no formatting or data shaping inside components.
+
 ## [1.2.0] - 2026-11-08
 
 ### Added
