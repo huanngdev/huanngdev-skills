@@ -10,6 +10,8 @@ All notable changes to the `huanngdev` plugin. Format: [Keep a Changelog](https:
 ### Changed
 - `hd-core`, `hd-index`: a new-project init follows `hd-infra` init.md without asking; its dependencies, MCP servers and vendor skills are pre-approved.
 - `hd-backend`, `hd-infra`: default S3-compatible image is `rustfs/rustfs`, Mailpit for local email, standard ports overridden in the root `.env`.
+- `hd-infra`: `packages/db` gets its own generated `.env`; CI runs `env:gen` before checks.
+- `hd-index`: vendor skills install non-interactively (`-y`) at project scope.
 
 ### Fixed
 - `hd-core`: `minimumReleaseAge` is in seconds (`259200`), not `"3d"`.

@@ -8,11 +8,19 @@
   "enabledPlugins": {
     "huanngdev@huanngdev-skills": true
   },
+  "enabledMcpjsonServers": ["zod-docs", "better-auth", "tanstack", "shadcn", "playwright"],
   "permissions": {
     "allow": [
-      "Bash(bun *)",
-      "Bash(bunx *)",
-      "Bash(docker compose *)",
+      "Bash(bun install)",
+      "Bash(bun install --frozen-lockfile)",
+      "Bash(bun run *)",
+      "Bash(bun --bun vitest run *)",
+      "Bash(bunx turbo run *)",
+      "Bash(bunx --bun shadcn@latest add *)",
+      "Bash(docker compose config *)",
+      "Bash(docker compose up -d *)",
+      "Bash(docker compose ps *)",
+      "Bash(docker compose logs *)",
       "Bash(git status *)",
       "Bash(git diff *)",
       "Bash(git log *)",
@@ -21,10 +29,13 @@
       "Bash(git switch *)"
     ],
     "deny": [
-      "Bash(git push --force *)",
-      "Bash(git push -f *)",
-      "Read(./.env)",
-      "Read(./apps/*/.env)"
+      "Bash(git push *--force*)",
+      "Bash(git push * -f*)",
+      "Bash(docker compose down *-v*)",
+      "Read(./**/.env)",
+      "Read(./**/.env.local)",
+      "Read(./**/.env.*.local)",
+      "Read(./**/.env.production)"
     ]
   }
 }

@@ -49,6 +49,7 @@ Other agents: same servers in their own config (e.g. Better Auth: `bunx auth@lat
 ## Installing
 - Adding an MCP server or vendor skill changes project config and runs third-party code: ask the user first — except a new-project init, where the entries for its stack are pre-approved (`hd-infra` init.md).
 - Install into the **project** (not globally) only what its stack uses; commit `.mcp.json` and the project's skills lockfile.
+- Install vendor skills non-interactively at project scope: `bunx skills add <repo> -s <skills> -y`.
 - Official skills only. Update with `bunx skills update`; never hand-edit installed vendor skill files.
 
 ## Tech not in the registry
