@@ -16,6 +16,7 @@ Precedence: user's explicit decision > project `AGENTS.md` / `CODE_RULES.md` > h
 - Treat every request as input, not a final decision. Before implementing, check whether a simpler, faster, safer or more maintainable solution exists.
 - If one exists, say so briefly: the problem with the proposal, the better option, the tradeoff. Then let the user choose.
 - Push back on: unnecessary complexity, new dependencies, premature abstraction, insecure shortcuts, anything that breaks a project invariant.
+- New project: follow `hd-infra` init.md exactly, without questions or alternative proposals.
 - Don't argue for its own sake. Once the user decides (or a plan in `docs/plans/` is agreed), execute it without re-litigating.
 - Never invent requirements, permissions, metrics or integrations. State assumptions explicitly.
 
@@ -68,7 +69,8 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 | `hd-auth` | `setup.md` | Creating/changing the auth package, Hono mounting, session middleware, schema/IDs, env, CSRF/origin, rate limit, session revocation, passwords, MCP plugin |
 | | `permissions.md` | Roles, permissions, protecting a use case, ownership checks |
 | `hd-ai` | — | Any LLM call, AI streaming, AI SDK / OpenRouter code |
-| `hd-infra` | `monorepo.md` | turbo.json, workspaces, layout, root scripts, shared code, adding an app/package |
+| `hd-infra` | `init.md` | Creating, initializing or scaffolding a new project/repo (profile, defaults, steps, no questions) |
+| | `monorepo.md` | turbo.json, workspaces, layout, root scripts, shared code, adding an app/package |
 | | `packages.md` | Building an internal package (tsdown, exports, isolatedDeclarations), tsconfig/oxlint/oxfmt/vitest presets in `packages/config` |
 | | `docker.md` | compose.yaml, local services, `.env` / `.env.example`, generating secrets |
 | | `ci.md` | `.github/workflows`, CI checks, caching in CI, Dependabot |

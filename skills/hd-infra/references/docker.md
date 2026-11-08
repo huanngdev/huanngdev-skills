@@ -31,7 +31,7 @@ It never overwrites existing values, only appends missing keys, prints key names
 - One `compose.yaml` at the repo root with a top-level `name:`. Compose reads the root `.env` for `${…}` interpolation.
 - Every username, password, secret, token and connection string comes from `.env` by name:
   - secrets: `${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}` — required, **no default**.
-  - non-secret config may default: `${POSTGRES_PORT:-5432}`, `${POSTGRES_DB:-app}`. Port numbers are the project's choice.
+  - non-secret config may default: `${POSTGRES_PORT:-5432}`, `${POSTGRES_DB:-app}`. Ports: standard defaults; a busy port is changed in the root `.env`, not in compose.
   - never a literal credential (`POSTGRES_PASSWORD: postgres` is forbidden).
 - Build derived URLs once with a YAML anchor instead of repeating parts:
   ```yaml
@@ -40,5 +40,5 @@ It never overwrites existing values, only appends missing keys, prints key names
 - Pin image tags (`postgres:18-alpine`), never `latest`.
 - Every service has a `healthcheck`; dependents use `depends_on: { svc: { condition: service_healthy } }`.
 - Named volumes for data. Publish ports on localhost only: `"127.0.0.1:${POSTGRES_PORT:-5432}:5432"`.
-- Standard services (only those the project needs): `postgres:18-alpine` (needed for `uuidv7()`), `redis:<version>-alpine` with `--requirepass ${REDIS_PASSWORD:?}`, an S3-compatible store chosen per project (`hd-backend` storage.md; MinIO's official images are gone).
+- Standard services (only those the project needs): `postgres:18-alpine` (needed for `uuidv7()`), `redis:<version>-alpine` with `--requirepass ${REDIS_PASSWORD:?}`, `rustfs/rustfs:<x.y.z>` for S3 (`hd-backend` storage.md; MinIO's official images are gone), `axllent/mailpit:<vX.Y>` as the local SMTP catcher when the app sends email.
 - Validate before committing: `docker compose config --quiet`.

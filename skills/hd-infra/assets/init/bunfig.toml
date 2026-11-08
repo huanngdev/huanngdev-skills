@@ -1,0 +1,3 @@
+[install]
+# seconds: skip versions published less than 3 days ago (hd-core security.md)
+minimumReleaseAge = 259200

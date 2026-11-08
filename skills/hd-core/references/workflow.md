@@ -13,6 +13,7 @@
 - Keep unrelated user changes intact; remove only code your change made obsolete.
 
 ## Ask first
+Not during a new-project init: what `hd-infra` init.md lists is pre-approved.
 Deploys, remote/production migrations, setting real secrets, creating/deleting cloud resources, adding a dependency or a major upgrade, changing agreed architecture, deleting data or files you didn't create, force-push/history rewrite, paid API calls outside approved tests.
 
 ## Never

@@ -28,5 +28,5 @@
 ## Dependencies & CI
 - Add dependencies sparingly (ask first); prefer Bun/platform built-ins.
 - Lockfile committed; installs with `--frozen-lockfile`. Lifecycle scripts only for packages listed in `trustedDependencies`.
-- `bunfig.toml` `[install] minimumReleaseAge = "3d"` to skip freshly published (possibly hijacked) versions; exclude only with a reason.
+- `bunfig.toml` `[install] minimumReleaseAge = 259200` (seconds = 3 days) to skip freshly published (possibly hijacked) versions; exclude only with a reason.
 - Dependabot weekly; CodeQL and secret scanning (TruffleHog) in CI (`hd-infra` ci.md).

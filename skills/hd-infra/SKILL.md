@@ -1,6 +1,6 @@
 ---
 name: hd-infra
-description: "Monorepo rules: Turborepo + Bun, tsdown packages, shared oxlint/oxfmt/tsconfig/Vitest config, Docker Compose with generated .env secrets, GitHub Actions. Use when changing turbo.json, workspaces, packages, tool configs, compose, .env or CI."
+description: "Monorepo rules and new-project init: Turborepo + Bun, tsdown packages, shared oxlint/oxfmt/tsconfig/Vitest config, Docker Compose with generated .env secrets, GitHub Actions. Use when creating a new project or changing turbo.json, workspaces, packages, tool configs, compose, .env or CI."
 license: MIT
 metadata:
   author: huanngdev
@@ -20,6 +20,7 @@ Docs: hd-index docs sources (Turborepo, Bun, Oxc, tsdown, Vite / Vitest).
 ## Topics — read only what the task touches
 | File | Read when |
 |---|---|
+| `references/init.md` | Creating, initializing or scaffolding a new project/repo (profile, defaults, steps, no questions) |
 | `references/monorepo.md` | turbo.json, workspaces, layout, root scripts, shared code, adding an app/package |
 | `references/packages.md` | Building an internal package (tsdown, exports, isolatedDeclarations), tsconfig/oxlint/oxfmt/vitest presets in `packages/config` |
 | `references/docker.md` | compose.yaml, local services, `.env` / `.env.example`, generating secrets |
