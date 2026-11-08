@@ -31,12 +31,13 @@ jobs:
             ${{ runner.os }}-turbo-${{ hashFiles('bun.lock') }}-
             ${{ runner.os }}-turbo-
       - run: bun install --frozen-lockfile
+      - run: bun run env:gen   # throwaway local values from the .env.example files
       - run: bun run format:check
       - run: bun run lint
       - run: bun run check-types
       - run: bun run test
       - run: bun run build
-      # with packages/db: - run: bun run --filter '@<scope>/db' db:check
+      # with packages/db: - run: bun run db:check
 ```
 Check action majors against their releases when creating a new workflow; keep them consistent across the repo.
 

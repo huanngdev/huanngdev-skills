@@ -1,7 +1,7 @@
 # Storage & cache
 
 ## Files (any S3-compatible store)
-- Local: an S3-compatible service in `compose.yaml`; the image is the project's choice, pinned and recorded in an ADR. MinIO's official images are no longer published, so don't add `minio/minio`.
+- Local: an S3-compatible service in `compose.yaml`; image from `hd-infra` docker.md; another image needs an ADR.
 - Credentials come from the root `.env` (`S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY=<generate>`, …) and reach the app through its validated env.
 - Client: `new Bun.S3Client({ endpoint, accessKeyId, secretAccessKey, bucket })` — no AWS SDK.
 - The server chooses the object key (e.g. `<entity>/<id>/<uuid>.<ext>`) and stores it in the DB. Never accept a key or path from the client to read/write.

@@ -29,6 +29,6 @@ export const env = parsed.data;
 - Same pattern with `import.meta.env` as input and a schema of `VITE_*` keys; on failure `throw` (the app must not render). Import it at the top of `main.tsx`.
 
 ## Keeping things in sync
-- Every key in the schema appears in the app's `.env.example` (secrets as `<generate>`, see `hd-infra` docker.md), and vice versa.
+- Every key in the schema appears in the app's `.env.example` (secrets as `<generate>`, see `hd-infra` docker.md), and vice versa. Vite apps: non-`VITE_*` keys read only by `vite.config.ts` (e.g. `WEB_PORT`) are parsed there with Zod, not in the browser schema.
 - New env var = add to schema + `.env.example` + (if a turbo task reads it) `turbo.json` `env` in the same change.
 - Tests set env through the same schema (e.g. a `.env.test`), never by bypassing it.
