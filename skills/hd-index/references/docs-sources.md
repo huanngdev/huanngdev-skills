@@ -31,6 +31,8 @@ Goal: research docs fast, accurately and for the **installed** version. Order: d
 | Testing Library | — | — | `https://testing-library.com/docs` (no llms.txt) |
 | MSW | — | — | `https://mswjs.io/docs` (no llms.txt) |
 | Playwright | `playwright` | — | `https://playwright.dev/docs/intro` (no llms.txt) |
+| Taste Skill (UI design, community) | — | `Leonxlnx/taste-skill -s design-taste-frontend` | `https://www.tasteskill.dev/llms.txt` |
+| System design (community) | — | `mattpocock/skills -s grilling domain-modeling codebase-design` | — |
 
 ## MCP entries (merge into the project's `.mcp.json`; add only what the project uses)
 ```json
@@ -50,7 +52,7 @@ Other agents: same servers in their own config (e.g. Better Auth: `bunx auth@lat
 - Adding an MCP server or vendor skill changes project config and runs third-party code: ask the user first — except a new-project init, where the entries for its stack are pre-approved (`hd-infra` init.md).
 - Install into the **project** (not globally) only what its stack uses; commit `.mcp.json` and the project's skills lockfile.
 - Install vendor skills non-interactively at project scope: `bunx skills add <repo> -s <skills> -a claude-code codex -y` (fixed agent list, default symlink mode).
-- Official skills only. Update with `bunx skills update`; never hand-edit installed vendor skill files.
+- Official skills only, plus rows marked community: the owner approved those; install them in every project. Update with `bunx skills update`; never hand-edit installed vendor skill files.
 
 ## Tech not in the registry
 1. Search, official sources first: the vendor's docs site for an MCP server or `llms.txt`, `bunx skills find <tech>`, the vendor's GitHub org for a skills repo.

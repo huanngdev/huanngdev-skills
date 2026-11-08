@@ -38,6 +38,12 @@ jobs:
       - name: Validator self-test
         run: scripts/test-validate.sh
 
+      - name: gen-env.ts regression tests
+        run: bun test scripts/tests
+
+      - name: Config presets work in a consumer repo
+        run: scripts/test-presets.sh
+
       - name: Validate plugin + marketplace (claude plugin validate)
         run: bunx "@anthropic-ai/claude-code@$CLAUDE_CODE_VERSION" plugin validate .
 

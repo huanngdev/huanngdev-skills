@@ -56,6 +56,15 @@ expect_fail "Vietnamese text" "Vietnamese text found"
 fresh; echo '{"mcpServers":{}}' >>"$work/r/skills/hd-core/references/git.md"
 expect_fail "MCP config outside the registry" "belong only in"
 
+fresh; echo '{ "a": 1, }' >"$work/r/skills/hd-infra/assets/init/claude-settings.json"
+expect_fail "invalid JSON asset" "asset does not parse"
+
+fresh; echo 'a = = 1' >"$work/r/skills/hd-infra/assets/init/bunfig.toml"
+expect_fail "invalid TOML asset" "asset does not parse"
+
+fresh; printf 'a: [1\n' >"$work/r/skills/hd-infra/assets/init/dependabot.yml"
+expect_fail "invalid YAML asset" "asset does not parse"
+
 fresh; edit skills/hd-ai/SKILL.md 's/^license: MIT\n//m'
 expect_fail "missing license" "license must be MIT"
 

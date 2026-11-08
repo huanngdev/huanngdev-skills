@@ -2,7 +2,7 @@
 
 Skills cá nhân chứa style làm việc của huanngdev, dùng được ở mọi project và mọi agent theo chuẩn [Agent Skills](https://agentskills.io) (Claude Code, Codex, Cursor, OpenCode, Gemini CLI…). Nội dung skill viết bằng tiếng Anh để tiết kiệm token.
 
-> **Trạng thái:** chưa release (version `0.0.0`). Đừng cài plugin cho tới bản `0.1.0`.
+> **Trạng thái:** đã release, version hiện tại nằm ở `.claude-plugin/plugin.json` và [Releases](https://github.com/huanngdev/huanngdev-skills/releases). Lịch sử thay đổi: [CHANGELOG.md](CHANGELOG.md).
 
 `hd-index` là file index: rules chung cho mọi task + bản đồ "task nào → skill nào → file nào". Ít skill, nhiều file: mỗi nhóm một skill, mỗi chủ đề một file trong `references/` (agent chỉ đọc file cần).
 
@@ -15,7 +15,7 @@ Skills cá nhân chứa style làm việc của huanngdev, dùng được ở m�
 | `hd-validate` | schemas, env, forms | ✅ |
 | `hd-auth` | setup, permissions | ✅ |
 | `hd-ai` | — (một file) | ✅ |
-| `hd-infra` | monorepo, packages, docker, ci (+ `assets/gen-env.ts`) | ✅ |
+| `hd-infra` | init, monorepo, packages, docker, ci (+ `assets/gen-env.ts`, `assets/init/`, `assets/config/`) | ✅ |
 
 Không có skill cho dịch vụ bên thứ ba (Vercel, Cloudflare, Neon…) — dùng skill official của vendor. Ngoại lệ: Zod, Better Auth, AI SDK có skill riêng nhưng chỉ ghi quy ước của mình + MCP docs.
 
@@ -64,6 +64,15 @@ Trong AGENTS.md của project, chỉ ghi phần riêng và trỏ tới skills:
 ```
 Hoặc bảo agent: "dùng hd-core (docs.md + `assets/AGENTS.template.md`) để rút gọn AGENTS.md này".
 
+## Tạo project mới
+Mở agent trong một thư mục trống (tên thư mục = tên project) và bảo: "init project mới: <mô tả ngắn>". Agent làm theo `hd-infra` `init.md`, không hỏi lại:
+- Profile mặc định: `packages/{config,shared,db,auth}` + `apps/{api,web}`. AI, S3 (RustFS), Redis, email (Mailpit) chỉ thêm khi mô tả có nhắc tới.
+- Version mới nhất đã qua 3 ngày (`bunfig.toml`), pin trong `bun.lock`; secret sinh bằng `bun run env:gen`.
+- Project nhận sẵn `.claude/settings.json` (bật plugin `huanngdev`, duyệt MCP, allowlist lệnh local) và preset tsconfig/oxlint/oxfmt/vitest.
+- Agent chỉ commit local. Tự chạy: `gh repo create <tên> --private --source . --push`, rồi bật branch protection cho `main` với check `ci`.
+
+Cần có: `bun`, Docker, `gh` (để tạo repo).
+
 ## Thêm / sửa skill
 Rules đầy đủ ở [AGENTS.md](AGENTS.md) (agent tự đọc khi làm việc trong repo này). Tóm tắt:
 1. Copy `templates/SKILL.template.md` → `skills/hd-<topic>/SKILL.md`, viết tiếng Anh
@@ -72,7 +81,7 @@ Rules đầy đủ ở [AGENTS.md](AGENTS.md) (agent tự đọc khi làm việc
 4. `scripts/validate.sh` và `claude plugin validate .` phải pass (cần `bun`; sửa validator thì chạy thêm `scripts/test-validate.sh`) → commit (chưa bump version)
 
 ## Release (deploy)
-Kênh deploy chính là **Claude Code plugin**: push lên `main` = phát hành. Version chỉ nằm ở `.claude-plugin/plugin.json`.
+Kênh deploy chính là **Claude Code plugin**. Push lên `main` **chưa** phải phát hành: người đã cài chỉ nhận bản mới khi `version` trong `.claude-plugin/plugin.json` tăng (Claude Code cache theo version), tức là sau `scripts/release.sh`.
 
 | Loại | Khi nào |
 |---|---|
@@ -90,4 +99,4 @@ git switch main && git pull
 scripts/release.sh tag               # tag huanngdev--vX.Y.Z + push → tự tạo GitHub Release
 ``` Máy đã bật auto-update nhận bản mới ở lần mở Claude Code tiếp theo; nếu không thì chạy `claude plugin marketplace update huanngdev-skills && claude plugin update huanngdev@huanngdev-skills`.
 
-CI (`.github/workflows/ci.yml`) chạy mỗi PR/push: validate skills (YAML thật, map, link, độ dài), self-test validator, `claude plugin validate` (version pin), version ↔ changelog, PR sửa skill phải thêm dòng changelog mới; shellcheck + actionlint; chạy lại validator trên macOS (bash 3.2).
+CI (`.github/workflows/ci.yml`) chạy mỗi PR/push: validate skills (YAML thật, map, link, độ dài, asset JSON/TOML/YAML parse được), self-test validator, test `gen-env.ts` (`bun test scripts/tests`), preset config chạy thật trong repo mẫu (`scripts/test-presets.sh`), `claude plugin validate` (version pin), version ↔ changelog, PR sửa skill phải thêm dòng changelog mới; shellcheck + actionlint; chạy lại validator trên macOS (bash 3.2).

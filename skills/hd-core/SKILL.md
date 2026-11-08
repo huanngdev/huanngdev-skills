@@ -1,6 +1,6 @@
 ---
 name: hd-core
-description: "Cross-cutting engineering rules for TypeScript repos: workflow and hand-off, git and PRs, AGENTS.md and ADRs, TypeScript style, testing, security. Use when implementing, fixing, reviewing or committing code, writing tests, or editing AGENTS.md, ADRs or plans."
+description: "Cross-cutting engineering rules for TypeScript repos: feature design with trade-offs, workflow and hand-off, git and PRs, AGENTS.md and ADRs, TypeScript style, testing, security. Use when designing a feature, implementing, fixing, reviewing or committing code, writing tests, or editing AGENTS.md, ADRs or plans."
 license: MIT
 metadata:
   author: huanngdev
@@ -19,6 +19,7 @@ Docs: hd-index docs sources (TypeScript, Vite / Vitest, Testing Library, MSW, Pl
 | File | Read when |
 |---|---|
 | `references/workflow.md` | Starting any task, ask-first boundaries, hand-off and reporting |
+| `references/design.md` | Planning a new feature or a change to data model, API contract, auth, money, integrations; trade-offs; recording the design for later features |
 | `references/git.md` | Branches, commits, PRs, merging |
 | `references/docs.md` | AGENTS.md, CLAUDE.md, ADRs, plans, milestones/progress, writing project docs |
 | `references/typescript.md` | Writing or reviewing any TypeScript |

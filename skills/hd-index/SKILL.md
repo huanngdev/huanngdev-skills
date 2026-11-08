@@ -51,6 +51,7 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 |---|---|---|
 | `hd-index` | `docs-sources.md` | Before using any library/tool API; adding MCP servers or vendor skills |
 | `hd-core` | `workflow.md` | Starting any task, ask-first boundaries, hand-off and reporting |
+| | `design.md` | Planning a new feature or a change to data model, API contract, auth, money, integrations; trade-offs; recording the design for later features |
 | | `git.md` | Branches, commits, PRs, merging |
 | | `docs.md` | AGENTS.md, CLAUDE.md, ADRs, plans, milestones/progress, writing project docs |
 | | `typescript.md` | Writing or reviewing any TypeScript |
@@ -58,7 +59,7 @@ Domain skills. Each `SKILL.md` is short; the rules live in `references/<topic>.m
 | | `security.md` | Secrets, untrusted input, redirects, outbound URLs, CSRF, headers, cookies, audit logging, dependencies |
 | `hd-frontend` | `react.md` | App setup, folder structure, routes/guards, components & hooks, error boundaries, frontend tests |
 | | `state.md` | API calls, queries, mutations, errors from the API, client/URL state |
-| | `ui.md` | Layout, Tailwind/theme tokens, shadcn components, scroll, dark mode, density, icons, motion |
+| | `ui.md` | Choosing/adding any UI component (shadcn only), landing/marketing pages, layout, Tailwind/theme tokens, scroll, dark mode, density, icons, motion |
 | | `a11y.md` | Keyboard, focus, labels, contrast, reduced motion |
 | `hd-backend` | `api.md` | Routes, services, middleware, errors, responses, pagination, OpenAPI/Scalar docs, CORS, logging, health/shutdown, realtime |
 | | `data.md` | Schema, queries, migrations, transactions, idempotency, seeds, DB tests |
