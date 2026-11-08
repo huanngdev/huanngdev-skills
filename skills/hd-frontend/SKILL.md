@@ -10,10 +10,11 @@ metadata:
 
 Project rules (AGENTS.md) win on conflict. Global rules: `hd-index`. Forms & schemas: `hd-validate`. Session: `hd-auth`.
 
-Docs: hd-index docs sources (React, React Router, Vite / Vitest, TanStack, axios, Zustand, shadcn/ui, Tailwind CSS, Motion, Testing Library, MSW, Playwright).
+Docs: hd-index docs sources (React, React Router, Vite / Vitest, TanStack, axios, Zustand, shadcn/ui, Tailwind CSS, Motion, Testing Library, MSW, Playwright, Taste Skill).
 
 ## Always
 - Vite (latest) + React 19 SPA with React Compiler on. Next.js only if the project already chose it.
+- Every UI element comes from shadcn/ui or its registry ecosystem; nothing fits → ask the user, never hand-roll a duplicate (`ui.md`).
 - Components are presentational; state, effects and data access live in hooks.
 - App REST data only through TanStack Query + the shared axios instance; responses parsed with shared Zod schemas. SDK-owned transports (Better Auth client, AI SDK streams) are the only exceptions.
 - UI is minimal and dense: no card inside card, few borders, tight spacing. Every scrollable region is a shadcn `ScrollArea` with a scroll fade (`ui.md`).
@@ -24,5 +25,5 @@ Docs: hd-index docs sources (React, React Router, Vite / Vitest, TanStack, axios
 |---|---|
 | `references/react.md` | App setup, folder structure, routes/guards, components & hooks, error boundaries, frontend tests |
 | `references/state.md` | API calls, queries, mutations, errors from the API, client/URL state |
-| `references/ui.md` | Layout, Tailwind/theme tokens, shadcn components, scroll, dark mode, density, icons, motion |
+| `references/ui.md` | Choosing/adding any UI component (shadcn only), landing/marketing pages, layout, Tailwind/theme tokens, scroll, dark mode, density, icons, motion |
 | `references/a11y.md` | Keyboard, focus, labels, contrast, reduced motion |

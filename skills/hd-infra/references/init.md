@@ -45,10 +45,10 @@ Not in the profile = not scaffolded. Add it later when a task needs it.
    - from `apps/api` (so Bun loads its `.env`): `bunx --bun auth@latest generate --config ../../packages/auth/src/server.ts --output ../../packages/db/src/schema/auth.ts --yes`
    - `bun run db:generate`, review the SQL, `bun run db:migrate` (root wrappers, `monorepo.md`).
 8. `apps/api` (`hd-backend` api.md): `env.ts`, `app.ts` with the full middleware order, `/health`, `/ready`, `/openapi.json`, `/docs`, graceful shutdown.
-9. `apps/web`: `bunx --bun shadcn@latest init --preset b0 --template vite --pointer --no-monorepo -c apps -n web`, then the `hd-frontend` structure: `env.ts`, `lib/api.ts`, providers, route object with sign-in, sign-up and a guarded home route inside an app layout using the `ScrollArea` wrapper.
+9. `apps/web`: `bunx --bun shadcn@latest init --preset b0 --template vite --pointer --no-monorepo -c apps -n web`, then `bunx --bun shadcn@latest add --all -y` in `apps/web`, then the `hd-frontend` structure: `env.ts`, `lib/api.ts`, providers, route object with sign-in, sign-up and a guarded home route inside an app layout using the `ScrollArea` wrapper.
 10. `.github/workflows/ci.yml` from `ci.md` (+ the `db:check` step).
 11. Docs: `AGENTS.md` from `hd-core` assets (fill stack, commands, code map), `CLAUDE.md` = `@AGENTS.md`, short `README.md`, `docs/decisions/0001-stack.md` listing the profile and pinned versions.
-12. `.mcp.json` with the `hd-index` docs-sources entries for the stack (zod-docs, better-auth, tanstack, shadcn, playwright); install the official vendor skills listed there for the stack, non-interactively as that file says.
+12. `.mcp.json` with the `hd-index` docs-sources entries for the stack (zod-docs, better-auth, tanstack, shadcn, playwright); install the official vendor skills listed there for the stack and every community row, non-interactively as that file says.
 
 ## Verify, then commit
 ```sh
