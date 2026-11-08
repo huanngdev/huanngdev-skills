@@ -57,6 +57,7 @@ Root `package.json`: `"private": true`, `"packageManager": "bun@<version>"`, `"w
 "format:check": "oxfmt --check -c packages/config/oxfmt.json",
 "check": "bun run format:check && turbo run lint check-types test build"
 ```
+With `packages/db`, also root wrappers `"db:<task>": "bun run --filter '@<scope>/db' db:<task>"` for `generate`, `migrate`, `check`, `seed`.
 One app: `bunx turbo run dev --filter=<package-name>`.
 
 ## Shared code

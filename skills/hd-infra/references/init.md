@@ -43,7 +43,7 @@ Not in the profile = not scaffolded. Add it later when a task needs it.
 7. `packages/auth` (`hd-auth` setup.md): email + password; role as `additionalFields` with `input: false` (no admin plugin). `auth` is built by a factory taking `{ db, secret, baseURL, trustedOrigins }`; `server.ts` exports it plus an instance built from Zod-parsed `Bun.env`. Then:
    - `bunx turbo run build --filter=@<name>/auth...` (builds `shared` and `db` first)
    - from `apps/api` (so Bun loads its `.env`): `bunx --bun auth@latest generate --config ../../packages/auth/src/server.ts --output ../../packages/db/src/schema/auth.ts --yes`
-   - `bun run --filter '@<name>/db' db:generate`, review the SQL, `db:migrate`.
+   - `bun run db:generate`, review the SQL, `bun run db:migrate` (root wrappers, `monorepo.md`).
 8. `apps/api` (`hd-backend` api.md): `env.ts`, `app.ts` with the full middleware order, `/health`, `/ready`, `/openapi.json`, `/docs`, graceful shutdown.
 9. `apps/web`: `bunx --bun shadcn@latest init --preset b0 --template vite --pointer --no-monorepo -c apps -n web`, then the `hd-frontend` structure: `env.ts`, `lib/api.ts`, providers, route object with sign-in, sign-up and a guarded home route inside an app layout using the `ScrollArea` wrapper.
 10. `.github/workflows/ci.yml` from `ci.md` (+ the `db:check` step).
